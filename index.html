@@ -1,532 +1,293 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Tiger Waves</title>
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Adsgram Ad SDK -->
-    <script src="https://adsgram.ai/js/adsgram-ad-controller.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiger Waves Mini App</title>
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Adsgram SDK -->
+  <script src="https://sad.adsgram.ai/js/sad-index.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f111a 0%, #1a1d29 100%);
+      color: #ffffff;
+      text-align: center;
+      margin: 0;
+      padding: 15px;
+      min-height: 100vh;
+    }
+    h1 { color: #f39c12; margin-bottom: 5px; font-size: 26px; }
+    p { font-size: 13px; color: #a0a5b5; margin-top: 0; }
     
-    <style>
-        :root {
-            --bg-color: #0f111a;
-            --card-bg: #181b28;
-            --primary-color: #f39c12;
-            --primary-glow: rgba(243, 156, 18, 0.3);
-            --text-color: #ffffff;
-            --text-sub: #9ca3af;
-            --accent-green: #2ecc71;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-            color: #fff;
-            border: 2px solid var(--primary-color);
-        }
-
-        .user-details h4 {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-color);
-        }
-
-        .user-details p {
-            font-size: 12px;
-            color: var(--primary-color);
-        }
-
-        .brand-logo {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--primary-color);
-            letter-spacing: 1px;
-        }
-
-        /* Notice Banner Design */
-        .notice-banner {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.1);
-        }
-
-        .notice-icon {
-            font-size: 20px;
-        }
-
-        .notice-text {
-            font-size: 12px;
-            line-height: 1.4;
-            color: #e2e8f0;
-        }
-
-        .notice-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
-        .content-view {
-            flex: 1;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .content-view.active {
-            display: flex;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #181b28 0%, #222639 100%);
-            border: 1px solid rgba(243, 156, 18, 0.2);
-            border-radius: 20px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            margin-bottom: 15px;
-        }
-
-        .balance-title {
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .balance-amount {
-            font-size: 42px;
-            font-weight: 800;
-            color: var(--text-color);
-            margin-bottom: 10px;
-        }
-
-        .usd-pill {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(46, 204, 113, 0.15);
-            color: var(--accent-green);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            gap: 6px;
-        }
-
-        .tap-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .tap-btn {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2b314a 0%, #161926 100%);
-            border: 4px solid var(--primary-color);
-            box-shadow: 0 0 30px var(--primary-glow);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.05s ease;
-        }
-
-        .tap-btn:active {
-            transform: scale(0.93);
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 15px 20px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .custom-input {
-            width: 100%;
-            max-width: 400px;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: var(--card-bg);
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            margin-bottom: 15px;
-        }
-
-        .custom-input:focus {
-            border-color: var(--primary-color);
-        }
-
-        .btn-main {
-            width: 100%;
-            max-width: 400px;
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px var(--primary-glow);
-        }
-
-        .btn-action {
-            padding: 8px 16px;
-            background: linear-gradient(90deg, #f39c12, #e67e22);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-around;
-            background-color: var(--card-bg);
-            padding: 12px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-sub);
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-        }
-    </style>
+    .card {
+      background: #181b28;
+      border: 1px solid #282c3f;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .balance-title { font-size: 13px; color: #8890a6; text-transform: uppercase; letter-spacing: 1px; }
+    .balance { font-size: 34px; font-weight: bold; color: #00f2fe; margin: 8px 0; }
+    
+    button {
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+      box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+      transition: 0.2s;
+    }
+    button:active { transform: scale(0.98); }
+    button:disabled { background: #3a3d4d; color: #777; box-shadow: none; }
+    
+    .claim-btn { background: linear-gradient(45deg, #11998e, #38ef7d); box-shadow: 0 4px 10px rgba(56, 239, 125, 0.3); }
+    .withdraw-btn { background: linear-gradient(45deg, #00c6ff, #0072ff); box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3); }
+    .tap-btn { background: linear-gradient(45deg, #ff416c, #ff4b2b); font-size: 22px; padding: 22px; border-radius: 50%; width: 110px; height: 110px; margin: 12px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 15px rgba(255, 65, 108, 0.4); }
+    
+    input {
+      width: 85%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #3a3d4d;
+      background: #0f111a;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .result-text { font-size: 14px; color: #f1c40f; margin-top: 8px; font-weight: bold; }
+  </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="top-header">
-        <div class="user-info">
-            <div class="user-avatar" id="userInitial">U</div>
-            <div class="user-details">
-                <h4 id="userName">User</h4>
-                <p id="userHandle">@username</p>
-            </div>
-        </div>
-        <div class="brand-logo">⚡ Tiger</div>
-    </div>
+  <h1>🐅 Tiger Waves 🌊</h1>
+  <p>গেম খেলুন, রেফার করুন এবং ইনকাম করুন!</p>
 
-    <!-- View 1: Home / Dashboard -->
-    <div id="view-home" class="content-view active">
+  <!-- ব্যালেন্স ডিসপ্লে -->
+  <div class="card">
+    <div class="balance-title">আপনার মোট ব্যালেন্স</div>
+    <div class="balance"><span id="balance">0</span> Coins</div>
+    <p>রেফার সংখ্যা: <span id="referCount" style="color:#38ef7d; font-weight:bold;">0</span> / 5 জন</p>
+  </div>
+
+  <!-- ১. ট্যাপ ট্যাপ গেম -->
+  <div class="card">
+    <h3>👆 ট্যাপ টু আর্ন</h3>
+    <p>স্ক্রিনে ট্যাপ করে কয়েন সংগ্রহ করুন</p>
+    <button class="tap-btn" onclick="tapEarn()">🐅 TAP</button>
+  </div>
+
+  <!-- ২. লাকি স্পিন -->
+  <div class="card">
+    <h3>🎰 লাকি স্পিন (১-৫০০ Coins)</h3>
+    <p>স্পিন ঘুরিয়ে ভাগ্য পরীক্ষা করুন</p>
+    <button id="spinBtn" onclick="spinWheel()">🌀 স্পিন ঘুরান</button>
+    <div id="spinContainer" style="display:none;">
+      <div id="spinResult" class="result-text"></div>
+      <button class="claim-btn" onclick="claimReward('spin')">📺 অ্যাড দেখে Claim করুন</button>
+    </div>
+  </div>
+
+  <!-- ৩. ম্যাথ কুইজ -->
+  <div class="card">
+    <h3>🔢 ম্যাথ কুইজ</h3>
+    <p id="quizProblem">প্রশ্ন লোড হচ্ছে...</p>
+    <input type="number" id="quizAnswer" placeholder="উত্তর লিখুন">
+    <button id="quizCheckBtn" onclick="checkQuiz()">উত্তর জমা দিন</button>
+    <div id="quizContainer" style="display:none;">
+      <div id="quizResult" class="result-text"></div>
+      <button class="claim-btn" onclick="claimReward('quiz')">📺 অ্যাড দেখে Claim করুন (+50 Coins)</button>
+    </div>
+  </div>
+
+  <!-- ৪. রেফার ও আর্ন সেকশন -->
+  <div class="card">
+    <h3>👥 রেফার অ্যান্ড আর্ন</h3>
+    <p>প্রতি রেফারে পাবেন **৫০০ Coins**!</p>
+    <button style="background: linear-gradient(45deg, #8e44ad, #9b59b6);" onclick="copyReferLink()">🔗 রেফার লিংক কপি করুন</button>
+  </div>
+
+  <!-- ৫. উইথড্র সেকশন -->
+  <div class="card">
+    <h3>💸 টাকা তুলুন (Withdraw)</h3>
+    <p>উইথড্র করতে সর্বনিম্ন ৫০০ Coins এবং **কমপক্ষে ৫টি রেফার** আবশ্যক!</p>
+    <input type="text" id="withdrawNum" placeholder="বিকাশ / নগদ নম্বর">
+    <button class="withdraw-btn" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+  </div>
+
+  <script>
+    // ⚙️ কনফিগারেশন সেটআপ (আপনার দেওয়া টোকেন ও আইডি যুক্ত)
+    const ADSGRAM_BLOCK_ID = "55780";
+    const BOT_TOKEN = "8981530710:AAHg2XW2urkJjamw-zhe3u0VZcjDdmyasf8";
+    const ADMIN_CHAT_ID = "8768217446";
+
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let coins = parseInt(localStorage.getItem("tiger_coins")) || 0;
+    let referCount = parseInt(localStorage.getItem("tiger_refer")) || 0;
+    
+    document.getElementById("balance").innerText = coins;
+    document.getElementById("referCount").innerText = referCount;
+
+    let pendingReward = 0;
+
+    function updateUI() {
+      localStorage.setItem("tiger_coins", coins);
+      localStorage.setItem("tiger_refer", referCount);
+      document.getElementById("balance").innerText = coins;
+      document.getElementById("referCount").innerText = referCount;
+    }
+
+    // 🚀 অ্যাপে ঢোকার সাথে সাথেই অটোমেটিক অ্যাড
+    window.onload = function() {
+      // যদি কেউ রেফার লিংক দিয়ে ঢুকে থাকে (যেমন: ?start=ref123)
+      const urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.has('ref') && !localStorage.getItem("ref_counted")) {
+        referCount += 1;
+        coins += 500; // রেফার বোনাস
+        localStorage.setItem("ref_counted", "true");
+        updateUI();
+      }
+
+      showAdsgramAd(() => {
+        console.log("Welcome Ad Finished!");
+      });
+    };
+
+    // 📺 Adsgram অ্যাড দেখানোর ফাংশন
+    function showAdsgramAd(onSuccess) {
+      if (typeof Adsgram === 'undefined') {
+        alert("অ্যাড লোড হচ্ছে না, পরে আবার চেষ্টা করুন!");
+        if(onSuccess) onSuccess();
+        return;
+      }
+
+      const AdControllerInstance = Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+
+      AdControllerInstance.show().then(() => {
+        if(onSuccess) onSuccess();
+      }).catch(() => {
+        alert("⚠️ রিওয়ার্ড পেতে হলে অ্যাডটি পুরো শেষ পর্যন্ত দেখতে হবে!");
+      });
+    }
+
+    // 👆 ট্যাপ গেম লজিক
+    function tapEarn() {
+      coins += 1;
+      updateUI();
+    }
+
+    // 🎰 স্পিন লজিক
+    function spinWheel() {
+      const btn = document.getElementById("spinBtn");
+      btn.disabled = true;
+      document.getElementById("spinContainer").style.display = "none";
+
+      setTimeout(() => {
+        pendingReward = Math.floor(Math.random() * 500) + 1;
+        document.getElementById("spinResult").innerText = `🎉 আপনি পেয়েছেন ${pendingReward} Coins!`;
+        document.getElementById("spinContainer").style.display = "block";
+        btn.disabled = false;
+      }, 1000);
+    }
+
+    // 🔢 কুইজ লজিক
+    let num1, num2, answer;
+    function generateQuiz() {
+      num1 = Math.floor(Math.random() * 20) + 1;
+      num2 = Math.floor(Math.random() * 20) + 1;
+      answer = num1 + num2;
+      document.getElementById("quizProblem").innerText = `প্রশ্ন: ${num1} + ${num2} = ?`;
+      document.getElementById("quizContainer").style.display = "none";
+      document.getElementById("quizCheckBtn").disabled = false;
+    }
+    generateQuiz();
+
+    function checkQuiz() {
+      const userAnswer = parseInt(document.getElementById("quizAnswer").value);
+      if (userAnswer === answer) {
+        pendingReward = 50;
+        document.getElementById("quizResult").innerText = "✅ সঠিক উত্তর!";
+        document.getElementById("quizContainer").style.display = "block";
+        document.getElementById("quizCheckBtn").disabled = true;
+      } else {
+        alert("❌ ভুল উত্তর, আবার চেষ্টা করুন!");
+      }
+    }
+
+    // 🎁 Claim করার সময় অ্যাড
+    function claimReward(type) {
+      showAdsgramAd(() => {
+        coins += pendingReward;
+        updateUI();
+        alert(`🎉 সফলভাবে ${pendingReward} Coins যুক্ত হয়েছে!`);
         
-        <!-- English Notice Banner -->
-        <div class="notice-banner">
-            <div class="notice-icon">📢</div>
-            <div class="notice-text">
-                <div class="notice-title">Important Announcement</div>
-                Tiger Waves Token Launch Promo! The coin rate is currently set lower as we are in the initial launch phase. Earn and hold maximum coins now, as the token value will increase significantly in upcoming updates!
-            </div>
-        </div>
-
-        <div class="balance-card">
-            <div class="balance-title">Total Balance</div>
-            <div class="balance-amount" id="balanceCount">0</div>
-            <div class="usd-pill">
-                <span>$</span><span id="usdValue">0.00</span> USDT
-            </div>
-        </div>
-
-        <div class="tap-container">
-            <div class="tap-btn" onclick="tapToEarn()">
-                <span style="font-size: 60px;">⚡</span>
-            </div>
-            <p style="font-size: 12px; color: var(--text-sub); margin-top: 15px;">স্ক্রিনে ট্যাপ করে মাইনিং করুন</p>
-        </div>
-    </div>
-
-    <!-- View 2: Earn -->
-    <div id="view-earn" class="content-view">
-        <div class="card" style="border: 1px solid var(--primary-color);">
-            <div>
-                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">🎰 Daily Lucky Spin</h4>
-                <p style="font-size: 12px; color: var(--primary-color);">১ থেকে ১০০০০ কয়েন জেতার সুযোগ</p>
-            </div>
-            <button class="btn-action" onclick="spinWheel()">Spin</button>
-        </div>
-
-        <div style="width: 100%; max-width: 400px; margin: 10px 0 8px 0;">
-            <h3 style="font-size: 15px;">Mini Games</h3>
-        </div>
-
-        <div class="card">
-            <div>
-                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">Space Shooter</h4>
-                <p style="font-size: 12px; color: var(--primary-color);">+250 Coins</p>
-            </div>
-            <button class="btn-action" onclick="showAdAndReward(250)">Claim</button>
-        </div>
-
-        <div style="width: 100%; max-width: 400px; margin: 10px 0 8px 0;">
-            <h3 style="font-size: 15px;">Social Tasks</h3>
-        </div>
-
-        <div class="card">
-            <div>
-                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">Join Telegram Channel</h4>
-                <p style="font-size: 12px; color: var(--primary-color);">+150 Coins</p>
-            </div>
-            <button id="btnChannel" class="btn-action" onclick="completeTask('channel', 150)">Join</button>
-        </div>
-    </div>
-
-    <!-- View 3: Wallet & Withdraw -->
-    <div id="view-wallet" class="content-view">
-        <div class="balance-card" style="padding: 20px; margin-bottom: 15px;">
-            <div class="balance-title">Withdrawable USDT</div>
-            <div class="balance-amount" style="font-size: 30px;" id="walletUsd">$0.00</div>
-        </div>
-
-        <div class="card" style="margin-bottom: 15px;">
-            <div>
-                <h4 style="font-size: 13px; color: #fff;">উইথড্র রেট</h4>
-                <p style="font-size: 11px; color: var(--text-sub);">৫,০০০ কয়েন = $০.১৩ USDT (প্রায় ১৫ টাকা)</p>
-            </div>
-        </div>
-
-        <div style="width: 100%; max-width: 400px; text-align: left; margin-bottom: 6px; font-size: 12px; color: var(--text-sub);">
-            Binance / Bybit USDT (BEP-20) Address
-        </div>
-        <input type="text" id="bep20Address" class="custom-input" placeholder="0x..." />
-
-        <button class="btn-main" id="withdrawBtn" onclick="requestWithdraw()">Withdraw USDT</button>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="navbar">
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <span style="font-size: 18px;">🏠</span>
-            <span>Home</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('earn', this)">
-            <span style="font-size: 18px;">🎮</span>
-            <span>Earn</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('wallet', this)">
-            <span style="font-size: 18px;">💰</span>
-            <span>Wallet</span>
-        </div>
-    </div>
-
-    <script>
-        let balance = 0;
-        const rate = 0.000026; 
-
-        // ⚙️ আইডিগুলো পরবর্তীতে এখানে বসাবেন
-        const ADSGRAM_BLOCK_ID = "YOUR_ADSGRAM_BLOCK_ID"; 
-        const BOT_TOKEN = "YOUR_BOT_TOKEN"; 
-        const ADMIN_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"; 
-
-        let currentUser = { name: "Unknown User", username: "@Unknown" };
-        let tasksDone = { channel: false };
-
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-            
-            const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-            if (tgUser) {
-                currentUser.name = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
-                currentUser.username = tgUser.username ? '@' + tgUser.username : 'No Username';
-                
-                document.getElementById('userName').innerText = currentUser.name;
-                document.getElementById('userHandle').innerText = currentUser.username;
-                document.getElementById('userInitial').innerText = currentUser.name.charAt(0).toUpperCase();
-            }
-
-            if (window.Adsgram) {
-                const AdController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
-                AdController.show().catch(err => console.log("Ad skipped"));
-            }
+        if (type === 'spin') {
+          document.getElementById("spinContainer").style.display = "none";
+        } else if (type === 'quiz') {
+          document.getElementById("quizAnswer").value = "";
+          generateQuiz();
         }
+        pendingReward = 0;
+      });
+    }
 
-        function tapToEarn() {
-            balance += 1;
-            updateUI();
-        }
+    // 🔗 রেফার লিংক কপি
+    function copyReferLink() {
+      const user = tg.initDataUnsafe.user || { id: "12345" };
+      const refLink = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
+      navigator.clipboard.writeText(refLink).then(() => {
+        alert("✅ আপনার রেফার লিংক কপি হয়েছে! বন্ধুদের সাথে শেয়ার করুন (প্রতি রেফারে ৫০০ Coins)।");
+      });
+    }
 
-        function updateUI() {
-            document.getElementById('balanceCount').innerText = balance.toLocaleString();
-            const usd = (balance * rate).toFixed(2);
-            document.getElementById('usdValue').innerText = usd;
-            document.getElementById('walletUsd').innerText = '$' + usd;
-        }
+    // 💸 উইথড্র রিকোয়েস্ট লজিক (৫ রেফার ও ৫০০ কয়েন চেক)
+    function requestWithdraw() {
+      const num = document.getElementById("withdrawNum").value;
+      
+      if (referCount < 5) {
+        alert(`⚠️ উইথড্র করতে হলে আপনাকে কমপক্ষে ৫টি রেফার করতে হবে! আপনার বর্তমান রেফার: ${referCount}/5`);
+        return;
+      }
+      if (coins < 500) {
+        alert("⚠️ উইথড্র করতে সর্বনিম্ন ৫০০ Coins লাগবে!");
+        return;
+      }
+      if (!num) {
+        alert("⚠️ অনুগ্রহ করে বিকাশ বা নগদ নম্বর লিখুন!");
+        return;
+      }
 
-        function switchTab(tab, element) {
-            document.querySelectorAll('.content-view').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      const user = tg.initDataUnsafe.user || { first_name: "ইউজার" };
+      const msg = `📥 *নতুন উইথড্র রিকোয়েস্ট!*\n\n👤 নাম: ${user.first_name}\n📱 নম্বর: ${num}\n💰 পয়েন্ট: ${coins} Coins\n👥 মোট রেফার: ${referCount}টি`;
 
-            if (tab === 'home') document.getElementById('view-home').classList.add('active');
-            if (tab === 'earn') document.getElementById('view-earn').classList.add('active');
-            if (tab === 'wallet') document.getElementById('view-wallet').classList.add('active');
-
-            element.classList.add('active');
-        }
-
-        function showAdAndReward(coins) {
-            if (window.Adsgram) {
-                const AdController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
-                AdController.show().then(() => {
-                    balance += coins;
-                    updateUI();
-                    alert("অভিনন্দন! " + coins + " কয়েন ক্লেইম করা হয়েছে।");
-                }).catch(() => {
-                    alert("অ্যাডটি সম্পূর্ণ দেখা হয়নি!");
-                });
-            } else {
-                balance += coins;
-                updateUI();
-            }
-        }
-
-        function spinWheel() {
-            const rewards = [10, 50, 100, 200, 500, 1000];
-            const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
-            alert("স্পিনে পেয়েছেন: " + randomReward + " কয়েন! ক্লেইম করতে অ্যাড দেখুন।");
-            showAdAndReward(randomReward);
-        }
-
-        function completeTask(type, reward) {
-            if (!tasksDone.channel) {
-                window.open('https://t.me/YourChannelUsername', '_blank');
-                balance += reward;
-                tasksDone.channel = true;
-                updateUI();
-                
-                const btn = document.getElementById('btnChannel');
-                btn.innerText = 'Done';
-                btn.style.background = 'rgba(255,255,255,0.1)';
-                alert('টাস্ক সম্পন্ন হয়েছে!');
-            }
-        }
-
-        function requestWithdraw() {
-            const address = document.getElementById('bep20Address').value.trim();
-
-            if (balance < 5000) {
-                alert('উইথড্র করার জন্য সর্বনিম্ন ৫,০০০ কয়েন প্রয়োজন!');
-                return;
-            }
-
-            if (!address.startsWith('0x') || address.length < 40) {
-                alert('সঠিক BEP-20 (USDT) অ্যাড্রেস দিন!');
-                return;
-            }
-
-            const withdrawBtn = document.getElementById('withdrawBtn');
-            withdrawBtn.innerText = "Processing...";
-            withdrawBtn.disabled = true;
-
-            const usdAmount = (balance * rate).toFixed(2);
-            
-            const messageText = `🚨 *NEW WITHDRAW REQUEST!* 🚨\n\n` +
-                                `👤 *User:* ${currentUser.name} (${currentUser.username})\n` +
-                                `💰 *Coins:* ${balance} Coins ($${usdAmount} USDT)\n` +
-                                `📍 *BEP-20 Address:* \`${address}\``;
-
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        alert('আপনার উইথড্র রিকোয়েস্ট সফলভাবে এডমিনের কাছে সাবমিট হয়েছে!');
-                        balance -= 5000;
-                        updateUI();
-                        document.getElementById('bep20Address').value = '';
-                    } else {
-                        alert('উইথড্র সাবমিট করতে সমস্যা হয়েছে! পরে চেষ্টা করুন।');
-                    }
-                })
-                .catch(err => {
-                    alert('নেটওয়ার্ক সমস্যা! পরে আবার চেষ্টা করুন।');
-                })
-                .finally(() => {
-                    withdrawBtn.innerText = "Withdraw USDT";
-                    withdrawBtn.disabled = false;
-                });
-        }
-    </script>
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: ADMIN_CHAT_ID,
+          text: msg,
+          parse_mode: "Markdown"
+        })
+      }).then(() => {
+        alert("✅ উইথড্র রিকোয়েস্ট সফলভাবে অ্যাডমিনের কাছে পাঠানো হয়েছে!");
+        coins = 0;
+        updateUI();
+        document.getElementById("withdrawNum").value = "";
+      }).catch(() => {
+        alert("উইথড্র রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে!");
+      });
+    }
+  </script>
 </body>
 </html>
