@@ -94,6 +94,24 @@
     button:active { transform: scale(0.98); }
     button:disabled { background: #dcd6ce; color: #8c8378; box-shadow: none; }
 
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .game-card {
+      background: #fff;
+      border: 1px solid #f2e5d0;
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .game-icon { font-size: 32px; margin-bottom: 5px; }
+    .game-title { font-weight: bold; font-size: 13px; color: #2d241b; }
+    .game-reward { font-size: 11px; color: #d9822b; font-weight: bold; margin-top: 3px; }
+
     .task-item {
       display: flex;
       align-items: center;
@@ -173,10 +191,10 @@
   <div id="verifyModal">
     <div class="modal-card">
       <h2 style="color:#d9822b; margin-top:0;">🔒 Action Required</h2>
-      <p style="color:#6e6153; font-size:13px;">Join our official channel & group to enter the app!</p>
+      <p style="color:#6e6153; font-size:13px;">Join official channel & group to access the app!</p>
       
       <a href="https://t.me/tigerwavas1" target="_blank" class="join-btn">📢 Join Official Channel</a>
-      <a href="https://t.me/tigerwavas" target="_blank" class="join-btn" style="background:#0088cc;">💬 Join Withdrawal Group</a>
+      <a href="https://t.me/tigerwavas" target="_blank" class="join-btn" style="background:#0088cc;">💬 Join Group</a>
       
       <button onclick="verifyMembership()" style="margin-top:12px;">✅ Verify & Continue</button>
       <div id="verifyStatus" style="font-size:12px; margin-top:8px; color:#e74c3c;"></div>
@@ -210,11 +228,28 @@
         <div style="font-size:16px; font-weight:bold; color:#2d241b;">Lucky Spin</div>
         <div style="font-size:12px; color:#8c8378;">Spin & win free tokens daily</div>
       </div>
-      <button onclick="switchTab('earn', document.querySelectorAll('.nav-item')[2])" class="action-btn">Open</button>
+      <button onclick="switchTab('earn', document.querySelectorAll('.nav-item')[2])" class="action-btn">Play</button>
+    </div>
+
+    <!-- Featured Games Section -->
+    <div style="text-align:left; font-weight:bold; color:#2d241b; margin:15px 0 8px 0;">🎮 Arcade Games</div>
+    <div class="game-grid">
+      <div class="game-card">
+        <div class="game-icon">🐍</div>
+        <div class="game-title">Snake Master</div>
+        <div class="game-reward">+150 Coins</div>
+        <button onclick="playMiniGame('Snake Master', 150)" style="padding:6px; font-size:12px; margin-top:8px;">Play & Earn</button>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🚀</div>
+        <div class="game-title">Space Shooter</div>
+        <div class="game-reward">+200 Coins</div>
+        <button onclick="playMiniGame('Space Shooter', 200)" style="padding:6px; font-size:12px; margin-top:8px;">Play & Earn</button>
+      </div>
     </div>
   </div>
 
-  <!-- TAB 2: TASKS (ADSGRAM EARN) -->
+  <!-- TAB 2: TASKS (ADSGRAM) -->
   <div id="tab-tasks" class="tab-content">
     <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:15px;">📋 Quick Tasks</h2>
     
@@ -225,11 +260,19 @@
       </div>
       <button class="action-btn" onclick="watchAdsgramTask()">▶ Watch</button>
     </div>
+
+    <div class="task-item">
+      <div class="task-info">
+        <div class="task-title">Math Quiz Challenge</div>
+        <div class="task-reward">⚡ +50 Coins</div>
+      </div>
+      <button class="action-btn" onclick="startMathQuiz()">🧮 Solve</button>
+    </div>
   </div>
 
-  <!-- TAB 3: EARN (SPIN & GAMES) -->
+  <!-- TAB 3: EARN (SPIN & WHEEL) -->
   <div id="tab-earn" class="tab-content">
-    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">🎰 Lucky Spin</h2>
+    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">🎰 Lucky Wheel Spin</h2>
     
     <div class="card" style="text-align:center;">
       <div class="wheel-wrapper">
@@ -237,7 +280,7 @@
         <canvas id="wheelCanvas" width="220" height="220"></canvas>
       </div>
 
-      <button id="spinBtn" onclick="spinWheel()">🌀 Spin Wheel</button>
+      <button id="spinBtn" onclick="spinWheel()">🌀 SPIN WHEEL</button>
 
       <div id="spinContainer" style="display:none; margin-top:15px;">
         <div id="spinResult" style="font-weight:bold; color:#d9822b; margin-bottom:8px;"></div>
@@ -281,7 +324,7 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar (5 Tabs like Thunder Waves) -->
+  <!-- Bottom Navigation Bar -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('home', this)">
       <span class="icon">🏠</span>
@@ -370,18 +413,20 @@
       }
     }
 
-    // Adsgram Ad Integration
+    // Direct Adsgram Ad Controller Integration
     function showAdsgramAd(onSuccess) {
       if (typeof Adsgram === 'undefined') {
+        alert("⚠️ Adsgram SDK Not Loaded. Rewarding directly for test.");
         if(onSuccess) onSuccess();
         return;
       }
+      
       try {
         const AdControllerInstance = Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
         AdControllerInstance.show().then(() => {
           if(onSuccess) onSuccess();
-        }).catch(() => {
-          alert("⚠️ Please watch the complete ad to get your reward!");
+        }).catch((err) => {
+          alert("⚠️ Ad failed to load or skipped. Please watch full ad!");
         });
       } catch (e) {
         if(onSuccess) onSuccess();
@@ -393,8 +438,34 @@
       showAdsgramAd(() => {
         coins += 100;
         updateUI();
-        alert("🎉 Success! +100 Coins added.");
+        alert("🎉 Success! +100 Coins added to your balance!");
       });
+    }
+
+    // Mini Game Play Simulation with Ad
+    function playMiniGame(gameName, reward) {
+      alert(`🎮 Playing ${gameName}... Complete the game and watch ad to claim reward!`);
+      showAdsgramAd(() => {
+        coins += reward;
+        updateUI();
+        alert(`🎉 Great job! You received +${reward} Coins for playing ${gameName}!`);
+      });
+    }
+
+    // Math Quiz
+    function startMathQuiz() {
+      const n1 = Math.floor(Math.random() * 20) + 1;
+      const n2 = Math.floor(Math.random() * 20) + 1;
+      const ans = prompt(`Solve this: ${n1} + ${n2} = ?`);
+      if (parseInt(ans) === (n1 + n2)) {
+        showAdsgramAd(() => {
+          coins += 50;
+          updateUI();
+          alert("🎉 Correct answer! +50 Coins claimed.");
+        });
+      } else if (ans !== null) {
+        alert("❌ Wrong answer, try again!");
+      }
     }
 
     // Wheel Canvas Drawing
