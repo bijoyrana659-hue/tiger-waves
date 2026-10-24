@@ -12,20 +12,19 @@
     * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0b0e14;
-      color: #ffffff;
+      background: #fbf6ec;
+      color: #33291e;
       text-align: center;
       margin: 0;
-      padding: 15px 15px 80px 15px; /* bottom space for nav bar */
+      padding: 12px 12px 90px 12px;
       min-height: 100vh;
     }
-    h1 { color: #f39c12; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
     
     /* Overlay Lock Modal */
     #verifyModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(11, 14, 20, 0.98);
+      background: rgba(251, 246, 236, 0.98);
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -34,13 +33,13 @@
       padding: 20px;
     }
     .modal-card {
-      background: #161b26;
-      border: 1px solid #f39c12;
-      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e6c280;
+      border-radius: 20px;
       padding: 25px 20px;
       width: 100%;
       max-width: 350px;
-      box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+      box-shadow: 0 10px 30px rgba(230, 194, 128, 0.3);
     }
     .join-btn {
       display: block;
@@ -49,224 +48,267 @@
       text-decoration: none;
       padding: 12px;
       margin: 10px 0;
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: bold;
       font-size: 14px;
     }
 
-    .notice-box {
-      background: rgba(243, 156, 18, 0.12);
-      border: 1px solid #f39c12;
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 15px;
-      color: #f1c40f;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-
+    /* Cards & UI */
     .card {
-      background: #161b26;
-      border: 1px solid #232a3b;
-      border-radius: 16px;
+      background: #ffffff;
+      border-radius: 20px;
       padding: 18px;
       margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 20px rgba(220, 200, 170, 0.25);
+      border: 1px solid #f2e5d0;
+      text-align: left;
     }
-    .balance-title { font-size: 11px; color: #8890a6; text-transform: uppercase; letter-spacing: 1px; }
-    .balance { font-size: 32px; font-weight: bold; color: #00f2fe; margin: 5px 0; }
     
+    .balance-card {
+      background: linear-gradient(135deg, #3d3122 0%, #1f1911 100%);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 25px rgba(31, 25, 17, 0.3);
+      position: relative;
+    }
+    .balance-title { font-size: 11px; color: #b5a28f; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    .balance-amount { font-size: 36px; font-weight: 800; color: #f3ad3c; margin: 5px 0; }
+    .usdt-text { font-size: 12px; color: #a39483; }
+
     button {
-      background: linear-gradient(45deg, #f39c12, #e67e22);
+      background: linear-gradient(45deg, #f3ad3c, #e08b1b);
       color: #fff;
       border: none;
-      padding: 12px;
+      padding: 12px 18px;
       font-size: 14px;
       font-weight: bold;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       width: 100%;
       margin-top: 8px;
-      box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+      box-shadow: 0 4px 15px rgba(243, 173, 60, 0.35);
       transition: 0.2s;
     }
     button:active { transform: scale(0.98); }
-    button:disabled { background: #3a3d4d; color: #777; box-shadow: none; }
-    
-    .claim-btn { background: linear-gradient(45deg, #11998e, #38ef7d); box-shadow: 0 4px 10px rgba(56, 239, 125, 0.3); }
-    .withdraw-btn { background: linear-gradient(45deg, #00c6ff, #0072ff); box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3); }
-    .tap-btn { 
-      background: linear-gradient(135deg, #ff416c, #ff4b2b); 
-      font-size: 24px; 
-      border-radius: 50%; 
-      width: 140px; 
-      height: 140px; 
-      margin: 20px auto; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      box-shadow: 0 8px 25px rgba(255, 65, 108, 0.5); 
-      border: 4px solid rgba(255,255,255,0.2);
-    }
-    
-    select, input {
-      width: 90%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #232a3b;
-      background: #0f111a;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-    .result-text { font-size: 14px; color: #f1c40f; margin-top: 8px; font-weight: bold; }
+    button:disabled { background: #dcd6ce; color: #8c8378; box-shadow: none; }
 
-    /* Tab Content Visibility */
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border: 1px solid #f2e5d0;
+      border-radius: 16px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+    }
+    .task-info { text-align: left; }
+    .task-title { font-size: 14px; font-weight: bold; color: #2d241b; margin: 0 0 4px 0; }
+    .task-reward { font-size: 12px; color: #d9822b; font-weight: bold; }
+    .action-btn { width: auto; padding: 8px 16px; margin: 0; font-size: 13px; }
+
+    /* Wheel Canvas */
+    .wheel-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 15px auto;
+    }
+    #wheelCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid #f3ad3c;
+      transition: transform 4s cubic-bezier(0.15, 0.99, 0.18, 0.99);
+    }
+    .wheel-pointer {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 20px solid #e74c3c;
+      z-index: 10;
+    }
+
+    /* Tab Visibility */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Fixed Bottom Navigation Bar (Thunder Waves Style) */
+    /* Bottom Navigation Bar */
     .bottom-nav {
       position: fixed;
-      bottom: 0;
-      left: 0;
+      bottom: 0; left: 0;
       width: 100%;
-      background: #121622;
-      border-top: 1px solid #232a3b;
+      background: #ffffff;
+      border-top: 1px solid #f2e5d0;
       display: flex;
       justify-content: space-around;
       padding: 8px 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
       z-index: 1000;
     }
     .nav-item {
-      color: #7b849b;
+      color: #9e9182;
       text-decoration: none;
       font-size: 11px;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      width: 25%;
+      width: 20%;
+      font-weight: 600;
     }
-    .nav-item .icon { font-size: 18px; margin-bottom: 2px; }
-    .nav-item.active { color: #f39c12; font-weight: bold; }
+    .nav-item .icon { font-size: 20px; margin-bottom: 2px; }
+    .nav-item.active { color: #e08b1b; }
   </style>
 </head>
 <body>
 
-  <!-- Task Verification Modal -->
+  <!-- Verification Modal -->
   <div id="verifyModal">
     <div class="modal-card">
-      <h2 style="color:#f39c12; margin-top:0;">🔒 Action Required</h2>
-      <p style="color:#fff; font-size:13px;">Join our official Telegram channel & group to access the app!</p>
+      <h2 style="color:#d9822b; margin-top:0;">🔒 Action Required</h2>
+      <p style="color:#6e6153; font-size:13px;">Join our official channel & group to enter the app!</p>
       
       <a href="https://t.me/tigerwavas1" target="_blank" class="join-btn">📢 Join Official Channel</a>
       <a href="https://t.me/tigerwavas" target="_blank" class="join-btn" style="background:#0088cc;">💬 Join Withdrawal Group</a>
       
-      <button onclick="verifyMembership()" style="margin-top:12px; background:linear-gradient(45deg, #11998e, #38ef7d);">✅ Verify & Continue</button>
-      <div id="verifyStatus" style="font-size:12px; margin-top:8px; color:#ff4d4d;"></div>
+      <button onclick="verifyMembership()" style="margin-top:12px;">✅ Verify & Continue</button>
+      <div id="verifyStatus" style="font-size:12px; margin-top:8px; color:#e74c3c;"></div>
     </div>
   </div>
 
-  <!-- Header Section -->
-  <h1>🐅 Tiger Waves 🌊</h1>
-  
-  <div class="notice-box">
-    📢 <b>Announcement:</b> Coin value will increase soon! Earn & hold maximum coins now! 🚀
-  </div>
-
-  <div class="card" style="padding:12px;">
-    <div class="balance-title">Total Balance</div>
-    <div class="balance"><span id="balance">0</span> Coins</div>
-    <p style="margin:0; font-size:12px;">Referrals: <span id="referCount" style="color:#38ef7d; font-weight:bold;">0</span> / 5 Users</p>
-  </div>
-
-  <!-- TAB 1: TAP GAME (HOME) -->
+  <!-- TAB 1: HOME -->
   <div id="tab-home" class="tab-content active">
-    <div class="card">
-      <h3>👆 Tap to Earn</h3>
-      <p style="color:#a0a5b5; font-size:12px;">Tap the Tiger icon below to mine coins</p>
-      <button class="tap-btn" onclick="tapEarn()">🐅<br>TAP</button>
+    <!-- User Top Bar -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div id="userAvatar" style="width:45px; height:45px; background:#f3ad3c; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff; font-size:18px;">T</div>
+        <div style="text-align:left;">
+          <div id="userName" style="font-weight:bold; font-size:15px;">Tiger User</div>
+          <div style="font-size:11px; color:#a39483;">Lv 1 • Active Miner</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-title">Total Balance</div>
+      <div class="balance-amount"><span id="balance">0</span></div>
+      <div class="usdt-text">⚡ TIGER &nbsp;•&nbsp; $<span id="usdtVal">0.00</span> USDT</div>
+    </div>
+
+    <!-- Daily Bonus Card -->
+    <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:11px; color:#d9822b; font-weight:bold;">DAILY BONUS</div>
+        <div style="font-size:16px; font-weight:bold; color:#2d241b;">Lucky Spin</div>
+        <div style="font-size:12px; color:#8c8378;">Spin & win free tokens daily</div>
+      </div>
+      <button onclick="switchTab('earn', document.querySelectorAll('.nav-item')[2])" class="action-btn">Open</button>
     </div>
   </div>
 
-  <!-- TAB 2: GAMES & TASKS -->
+  <!-- TAB 2: TASKS (ADSGRAM EARN) -->
+  <div id="tab-tasks" class="tab-content">
+    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:15px;">📋 Quick Tasks</h2>
+    
+    <div class="task-item">
+      <div class="task-info">
+        <div class="task-title">Watch Adsgram Ad</div>
+        <div class="task-reward">⚡ +100 Coins per ad</div>
+      </div>
+      <button class="action-btn" onclick="watchAdsgramTask()">▶ Watch</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: EARN (SPIN & GAMES) -->
   <div id="tab-earn" class="tab-content">
-    <div class="card">
-      <h3>🎰 Lucky Spin (1-500 Coins)</h3>
-      <p style="color:#a0a5b5; font-size:12px;">Spin the wheel to test your luck!</p>
+    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">🎰 Lucky Spin</h2>
+    
+    <div class="card" style="text-align:center;">
+      <div class="wheel-wrapper">
+        <div class="wheel-pointer"></div>
+        <canvas id="wheelCanvas" width="220" height="220"></canvas>
+      </div>
+
       <button id="spinBtn" onclick="spinWheel()">🌀 Spin Wheel</button>
-      <div id="spinContainer" style="display:none;">
-        <div id="spinResult" class="result-text"></div>
-        <button class="claim-btn" onclick="claimReward('spin')">📺 Watch Ad to Claim</button>
-      </div>
-    </div>
 
-    <div class="card">
-      <h3>🔢 Math Quiz</h3>
-      <p id="quizProblem" style="font-weight:bold; font-size:16px;">Loading question...</p>
-      <input type="number" id="quizAnswer" placeholder="Enter your answer">
-      <button id="quizCheckBtn" onclick="checkQuiz()">Submit Answer</button>
-      <div id="quizContainer" style="display:none;">
-        <div id="quizResult" class="result-text"></div>
-        <button class="claim-btn" onclick="claimReward('quiz')">📺 Watch Ad to Claim (+50 Coins)</button>
+      <div id="spinContainer" style="display:none; margin-top:15px;">
+        <div id="spinResult" style="font-weight:bold; color:#d9822b; margin-bottom:8px;"></div>
+        <button onclick="claimSpinReward()" style="background:linear-gradient(45deg, #2ecc71, #27ae60);">📺 Watch Ad to Claim</button>
       </div>
     </div>
   </div>
 
-  <!-- TAB 3: REFERRAL -->
-  <div id="tab-friends" class="tab-content">
+  <!-- TAB 4: REFER & EARN -->
+  <div id="tab-refer" class="tab-content">
+    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">👥 Refer & Earn</h2>
+    
     <div class="card">
-      <h3>👥 Refer & Earn</h3>
-      <p style="color:#a0a5b5; font-size:13px;">Get <b>500 Coins</b> for every successful referral!</p>
-      <button style="background: linear-gradient(45deg, #8e44ad, #9b59b6); padding:14px;" onclick="copyReferLink()">🔗 Copy Referral Link</button>
-    </div>
-  </div>
-
-  <!-- TAB 4: WALLET & WITHDRAW -->
-  <div id="tab-wallet" class="tab-content">
-    <div class="card">
-      <h3>💸 Withdraw Funds</h3>
-      <p style="color:#a0a5b5; font-size:12px;">Requirement: Minimum 500 Coins & <b>5 Active Referrals</b> required!</p>
+      <div style="font-weight:bold; font-size:16px; margin-bottom:5px;">+500 Coins Per Friend</div>
+      <p style="font-size:12px; color:#8c8378;">Invite your friends to join Tiger Waves and earn bonuses instantly!</p>
       
-      <select id="withdrawMethod">
+      <div style="background:#fbf6ec; padding:10px; border-radius:10px; font-size:12px; word-break:break-all; margin:10px 0; color:#5c5044;" id="refLinkDisplay">
+        Generating link...
+      </div>
+      
+      <button onclick="copyReferLink()">🔗 Copy Invite Link</button>
+    </div>
+  </div>
+
+  <!-- TAB 5: PROFILE & WALLET -->
+  <div id="tab-profile" class="tab-content">
+    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">👤 Profile & Wallet</h2>
+    
+    <div class="card">
+      <div style="font-weight:bold; margin-bottom:10px;">💸 Withdraw Funds</div>
+      <p style="font-size:12px; color:#8c8378; margin-bottom:10px;">Min. 500 Coins & 5 Referrals required.</p>
+      
+      <select id="withdrawMethod" style="width:100%; padding:10px; border-radius:10px; border:1px solid #f2e5d0; background:#fbf6ec; margin-bottom:10px;">
         <option value="Binance ID">Binance Pay ID</option>
-        <option value="USDT (TRC20/BEP20)">USDT Address (TRC20/BEP20)</option>
+        <option value="USDT">USDT Address (TRC20/BEP20)</option>
       </select>
       
-      <input type="text" id="withdrawNum" placeholder="Enter Binance ID or USDT Address">
-      <button class="withdraw-btn" onclick="requestWithdraw()">Send Withdrawal Request</button>
+      <input type="text" id="withdrawNum" placeholder="Enter Binance ID or Address" style="width:100%; padding:10px; border-radius:10px; border:1px solid #f2e5d0; background:#fbf6ec; margin-bottom:10px; box-sizing:border-box;">
+      
+      <button onclick="requestWithdraw()">Send Withdrawal Request</button>
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Navigation Bar (5 Tabs like Thunder Waves) -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('home', this)">
       <span class="icon">🏠</span>
       <span>Home</span>
     </div>
+    <div class="nav-item" onclick="switchTab('tasks', this)">
+      <span class="icon">📋</span>
+      <span>Tasks</span>
+    </div>
     <div class="nav-item" onclick="switchTab('earn', this)">
-      <span class="icon">🎮</span>
+      <span class="icon">⚡</span>
       <span>Earn</span>
     </div>
-    <div class="nav-item" onclick="switchTab('friends', this)">
+    <div class="nav-item" onclick="switchTab('refer', this)">
       <span class="icon">👥</span>
-      <span>Friends</span>
+      <span>Refer</span>
     </div>
-    <div class="nav-item" onclick="switchTab('wallet', this)">
-      <span class="icon">💼</span>
-      <span>Wallet</span>
+    <div class="nav-item" onclick="switchTab('profile', this)">
+      <span class="icon">👤</span>
+      <span>Profile</span>
     </div>
   </div>
 
   <script>
-    // Configuration
     const ADSGRAM_BLOCK_ID = "55780";
     const BOT_TOKEN = "8981530710:AAHg2XW2urkJjamw-zhe3u0VZcjDdmyasf8";
     const ADMIN_CHAT_ID = "8768217446";
-
     const CHANNEL_USERNAME = "@tigerwavas1";
     const GROUP_USERNAME = "@tigerwavas";
 
@@ -275,172 +317,163 @@
 
     let coins = parseInt(localStorage.getItem("tiger_coins")) || 0;
     let referCount = parseInt(localStorage.getItem("tiger_refer")) || 0;
-    
-    document.getElementById("balance").innerText = coins;
-    document.getElementById("referCount").innerText = referCount;
-
     let pendingReward = 0;
 
     function updateUI() {
       localStorage.setItem("tiger_coins", coins);
       localStorage.setItem("tiger_refer", referCount);
       document.getElementById("balance").innerText = coins;
-      document.getElementById("referCount").innerText = referCount;
+      document.getElementById("usdtVal").innerText = (coins * 0.00001).toFixed(4);
+      
+      const user = tg.initDataUnsafe.user;
+      if(user) {
+        document.getElementById("userName").innerText = user.first_name || "User";
+        document.getElementById("userAvatar").innerText = (user.first_name || "T")[0].toUpperCase();
+        document.getElementById("refLinkDisplay").innerText = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
+      } else {
+        document.getElementById("refLinkDisplay").innerText = `https://t.me/TigerWavesBot/app?start=ref_12345`;
+      }
     }
+    updateUI();
 
-    // Switch Bottom Navigation Tabs
     function switchTab(tabName, element) {
-      const contents = document.querySelectorAll('.tab-content');
-      contents.forEach(content => content.classList.remove('active'));
-
-      const navItems = document.querySelectorAll('.nav-item');
-      navItems.forEach(item => item.classList.remove('active'));
-
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + tabName).classList.add('active');
       element.classList.add('active');
     }
 
-    // Verify Telegram Membership
+    // Telegram Membership Verification
     async function checkUserJoined(chatUsername, userId) {
       try {
         const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${chatUsername}&user_id=${userId}`);
         const data = await res.json();
-        if (data.ok && ['member', 'administrator', 'creator'].includes(data.result.status)) {
-          return true;
-        }
-        return false;
-      } catch (e) {
-        return false;
-      }
+        return data.ok && ['member', 'administrator', 'creator'].includes(data.result.status);
+      } catch (e) { return false; }
     }
 
     async function verifyMembership() {
       const statusDiv = document.getElementById("verifyStatus");
-      statusDiv.style.color = "#f1c40f";
       statusDiv.innerText = "Checking membership...";
-
       const user = tg.initDataUnsafe.user;
       if (!user) {
         document.getElementById("verifyModal").style.display = "none";
         return;
       }
-
       const joinedChannel = await checkUserJoined(CHANNEL_USERNAME, user.id);
       const joinedGroup = await checkUserJoined(GROUP_USERNAME, user.id);
 
       if (joinedChannel && joinedGroup) {
         document.getElementById("verifyModal").style.display = "none";
-        showAdsgramAd();
       } else {
-        statusDiv.style.color = "#ff4d4d";
-        statusDiv.innerText = "⚠️ Please join BOTH channel & group first!";
+        statusDiv.innerText = "⚠️ Please join both channel & group first!";
       }
     }
 
-    // Opening Ad
-    window.onload = function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      if(urlParams.has('ref') && !localStorage.getItem("ref_counted")) {
-        referCount += 1;
-        coins += 500;
-        localStorage.setItem("ref_counted", "true");
-        updateUI();
-      }
-    };
-
-    // Show Adsgram Ad
+    // Adsgram Ad Integration
     function showAdsgramAd(onSuccess) {
       if (typeof Adsgram === 'undefined') {
         if(onSuccess) onSuccess();
         return;
       }
-
-      const AdControllerInstance = Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
-
-      AdControllerInstance.show().then(() => {
+      try {
+        const AdControllerInstance = Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+        AdControllerInstance.show().then(() => {
+          if(onSuccess) onSuccess();
+        }).catch(() => {
+          alert("⚠️ Please watch the complete ad to get your reward!");
+        });
+      } catch (e) {
         if(onSuccess) onSuccess();
-      }).catch(() => {
-        alert("⚠️ You must watch the complete ad to claim rewards!");
+      }
+    }
+
+    // Watch Task Ad
+    function watchAdsgramTask() {
+      showAdsgramAd(() => {
+        coins += 100;
+        updateUI();
+        alert("🎉 Success! +100 Coins added.");
       });
     }
 
-    // Tap Game
-    function tapEarn() {
-      coins += 1;
-      updateUI();
-    }
+    // Wheel Canvas Drawing
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const rewards = [10, 50, 100, 200, 300, 500];
+    const colors = ['#f3ad3c', '#e08b1b', '#d9822b', '#c26a1b', '#ab5510', '#944105'];
+    const numSegments = rewards.length;
+    const arcSize = (2 * Math.PI) / numSegments;
+    let currentRotation = 0;
 
-    // Spin Game
+    function drawWheel() {
+      for (let i = 0; i < numSegments; i++) {
+        const angle = i * arcSize;
+        ctx.beginPath();
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(110, 110);
+        ctx.arc(110, 110, 110, angle, angle + arcSize);
+        ctx.lineTo(110, 110);
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(110, 110);
+        ctx.rotate(angle + arcSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 14px sans-serif";
+        ctx.fillText(rewards[i] + " C", 95, 5);
+        ctx.restore();
+      }
+    }
+    drawWheel();
+
     function spinWheel() {
       const btn = document.getElementById("spinBtn");
       btn.disabled = true;
       document.getElementById("spinContainer").style.display = "none";
 
+      const randomIndex = Math.floor(Math.random() * numSegments);
+      pendingReward = rewards[randomIndex];
+
+      const segmentDegree = 360 / numSegments;
+      const targetDegree = 360 - (randomIndex * segmentDegree) - (segmentDegree / 2);
+      const totalRotation = currentRotation + (360 * 4) + targetDegree - (currentRotation % 360);
+      currentRotation = totalRotation;
+
+      canvas.style.transform = `rotate(${totalRotation}deg)`;
+
       setTimeout(() => {
-        pendingReward = Math.floor(Math.random() * 500) + 1;
         document.getElementById("spinResult").innerText = `🎉 You won ${pendingReward} Coins!`;
         document.getElementById("spinContainer").style.display = "block";
         btn.disabled = false;
-      }, 1000);
+      }, 4000);
     }
 
-    // Quiz Game
-    let num1, num2, answer;
-    function generateQuiz() {
-      num1 = Math.floor(Math.random() * 20) + 1;
-      num2 = Math.floor(Math.random() * 20) + 1;
-      answer = num1 + num2;
-      document.getElementById("quizProblem").innerText = `Question: ${num1} + ${num2} = ?`;
-      document.getElementById("quizContainer").style.display = "none";
-      document.getElementById("quizCheckBtn").disabled = false;
-    }
-    generateQuiz();
-
-    function checkQuiz() {
-      const userAnswer = parseInt(document.getElementById("quizAnswer").value);
-      if (userAnswer === answer) {
-        pendingReward = 50;
-        document.getElementById("quizResult").innerText = "✅ Correct Answer!";
-        document.getElementById("quizContainer").style.display = "block";
-        document.getElementById("quizCheckBtn").disabled = true;
-      } else {
-        alert("❌ Incorrect answer, please try again!");
-      }
-    }
-
-    // Claim Reward
-    function claimReward(type) {
+    function claimSpinReward() {
       showAdsgramAd(() => {
         coins += pendingReward;
         updateUI();
-        alert(`🎉 Successfully claimed ${pendingReward} Coins!`);
-        
-        if (type === 'spin') {
-          document.getElementById("spinContainer").style.display = "none";
-        } else if (type === 'quiz') {
-          document.getElementById("quizAnswer").value = "";
-          generateQuiz();
-        }
+        alert(`🎉 Claimed ${pendingReward} Coins successfully!`);
+        document.getElementById("spinContainer").style.display = "none";
         pendingReward = 0;
       });
     }
 
-    // Copy Referral Link
     function copyReferLink() {
       const user = tg.initDataUnsafe.user || { id: "12345" };
       const refLink = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
       navigator.clipboard.writeText(refLink).then(() => {
-        alert("✅ Referral link copied! Share it with friends (500 Coins per referral).");
+        alert("✅ Referral link copied to clipboard!");
       });
     }
 
-    // Withdrawal Request
     function requestWithdraw() {
       const method = document.getElementById("withdrawMethod").value;
       const address = document.getElementById("withdrawNum").value;
       
       if (referCount < 5) {
-        alert(`⚠️ Withdrawal requires at least 5 referrals! Your current referrals: ${referCount}/5`);
+        alert(`⚠️ Requires at least 5 referrals! Current: ${referCount}/5`);
         return;
       }
       if (coins < 500) {
@@ -453,25 +486,31 @@
       }
 
       const user = tg.initDataUnsafe.user || { first_name: "User" };
-      const msg = `📥 *New Withdrawal Request!*\n\n👤 Name: ${user.first_name}\n💳 Method: ${method}\n📍 Address/ID: \`${address}\`\n💰 Balance: ${coins} Coins\n👥 Referrals: ${referCount}`;
+      const msg = `📥 *New Withdrawal Request!*\n\n👤 Name: ${user.first_name}\n💳 Method: ${method}\n📍 Address/ID: \`${address}\`\n💰 Balance: ${coins} Coins`;
 
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: ADMIN_CHAT_ID,
-          text: msg,
-          parse_mode: "Markdown"
-        })
+        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: msg, parse_mode: "Markdown" })
       }).then(() => {
-        alert("✅ Withdrawal request submitted successfully!");
+        alert("✅ Withdrawal request sent successfully!");
         coins = 0;
         updateUI();
         document.getElementById("withdrawNum").value = "";
       }).catch(() => {
-        alert("Failed to send withdrawal request!");
+        alert("Failed to send request.");
       });
     }
+
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.has('ref') && !localStorage.getItem("ref_counted")) {
+        referCount += 1;
+        coins += 500;
+        localStorage.setItem("ref_counted", "true");
+        updateUI();
+      }
+    };
   </script>
 </body>
 </html>
