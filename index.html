@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tiger Waves</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram Ad SDK -->
+    <script src="https://adsgram.ai/js/adsgram-ad-controller.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --card-bg: #181b28;
+            --primary-color: #f39c12;
+            --primary-glow: rgba(243, 156, 18, 0.3);
+            --text-color: #ffffff;
+            --text-sub: #9ca3af;
+            --accent-green: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            border: 2px solid var(--primary-color);
+        }
+
+        .user-details h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .user-details p {
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+
+        .brand-logo {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        /* Notice Banner Design */
+        .notice-banner {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.1);
+        }
+
+        .notice-icon {
+            font-size: 20px;
+        }
+
+        .notice-text {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+
+        .notice-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .content-view {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-view.active {
+            display: flex;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #181b28 0%, #222639 100%);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .balance-title {
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .usd-pill {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--accent-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            gap: 6px;
+        }
+
+        .tap-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tap-btn {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2b314a 0%, #161926 100%);
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 0 30px var(--primary-glow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.05s ease;
+        }
+
+        .tap-btn:active {
+            transform: scale(0.93);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px 20px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--card-bg);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .custom-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-main {
+            width: 100%;
+            max-width: 400px;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--card-bg);
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-sub);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="top-header">
+        <div class="user-info">
+            <div class="user-avatar" id="userInitial">U</div>
+            <div class="user-details">
+                <h4 id="userName">User</h4>
+                <p id="userHandle">@username</p>
+            </div>
+        </div>
+        <div class="brand-logo">⚡ Tiger</div>
+    </div>
+
+    <!-- View 1: Home / Dashboard -->
+    <div id="view-home" class="content-view active">
+        
+        <!-- English Notice Banner -->
+        <div class="notice-banner">
+            <div class="notice-icon">📢</div>
+            <div class="notice-text">
+                <div class="notice-title">Important Announcement</div>
+                Tiger Waves Token Launch Promo! The coin rate is currently set lower as we are in the initial launch phase. Earn and hold maximum coins now, as the token value will increase significantly in upcoming updates!
+            </div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-title">Total Balance</div>
+            <div class="balance-amount" id="balanceCount">0</div>
+            <div class="usd-pill">
+                <span>$</span><span id="usdValue">0.00</span> USDT
+            </div>
+        </div>
+
+        <div class="tap-container">
+            <div class="tap-btn" onclick="tapToEarn()">
+                <span style="font-size: 60px;">⚡</span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 15px;">স্ক্রিনে ট্যাপ করে মাইনিং করুন</p>
+        </div>
+    </div>
+
+    <!-- View 2: Earn -->
+    <div id="view-earn" class="content-view">
+        <div class="card" style="border: 1px solid var(--primary-color);">
+            <div>
+                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">🎰 Daily Lucky Spin</h4>
+                <p style="font-size: 12px; color: var(--primary-color);">১ থেকে ১০০০০ কয়েন জেতার সুযোগ</p>
+            </div>
+            <button class="btn-action" onclick="spinWheel()">Spin</button>
+        </div>
+
+        <div style="width: 100%; max-width: 400px; margin: 10px 0 8px 0;">
+            <h3 style="font-size: 15px;">Mini Games</h3>
+        </div>
+
+        <div class="card">
+            <div>
+                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">Space Shooter</h4>
+                <p style="font-size: 12px; color: var(--primary-color);">+250 Coins</p>
+            </div>
+            <button class="btn-action" onclick="showAdAndReward(250)">Claim</button>
+        </div>
+
+        <div style="width: 100%; max-width: 400px; margin: 10px 0 8px 0;">
+            <h3 style="font-size: 15px;">Social Tasks</h3>
+        </div>
+
+        <div class="card">
+            <div>
+                <h4 style="font-size: 14px; color: #fff; margin-bottom: 2px;">Join Telegram Channel</h4>
+                <p style="font-size: 12px; color: var(--primary-color);">+150 Coins</p>
+            </div>
+            <button id="btnChannel" class="btn-action" onclick="completeTask('channel', 150)">Join</button>
+        </div>
+    </div>
+
+    <!-- View 3: Wallet & Withdraw -->
+    <div id="view-wallet" class="content-view">
+        <div class="balance-card" style="padding: 20px; margin-bottom: 15px;">
+            <div class="balance-title">Withdrawable USDT</div>
+            <div class="balance-amount" style="font-size: 30px;" id="walletUsd">$0.00</div>
+        </div>
+
+        <div class="card" style="margin-bottom: 15px;">
+            <div>
+                <h4 style="font-size: 13px; color: #fff;">উইথড্র রেট</h4>
+                <p style="font-size: 11px; color: var(--text-sub);">৫,০০০ কয়েন = $০.১৩ USDT (প্রায় ১৫ টাকা)</p>
+            </div>
+        </div>
+
+        <div style="width: 100%; max-width: 400px; text-align: left; margin-bottom: 6px; font-size: 12px; color: var(--text-sub);">
+            Binance / Bybit USDT (BEP-20) Address
+        </div>
+        <input type="text" id="bep20Address" class="custom-input" placeholder="0x..." />
+
+        <button class="btn-main" id="withdrawBtn" onclick="requestWithdraw()">Withdraw USDT</button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="navbar">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <span style="font-size: 18px;">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('earn', this)">
+            <span style="font-size: 18px;">🎮</span>
+            <span>Earn</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('wallet', this)">
+            <span style="font-size: 18px;">💰</span>
+            <span>Wallet</span>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0;
+        const rate = 0.000026; 
+
+        // ⚙️ আইডিগুলো পরবর্তীতে এখানে বসাবেন
+        const ADSGRAM_BLOCK_ID = "YOUR_ADSGRAM_BLOCK_ID"; 
+        const BOT_TOKEN = "YOUR_BOT_TOKEN"; 
+        const ADMIN_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"; 
+
+        let currentUser = { name: "Unknown User", username: "@Unknown" };
+        let tasksDone = { channel: false };
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+            
+            const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+            if (tgUser) {
+                currentUser.name = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+                currentUser.username = tgUser.username ? '@' + tgUser.username : 'No Username';
+                
+                document.getElementById('userName').innerText = currentUser.name;
+                document.getElementById('userHandle').innerText = currentUser.username;
+                document.getElementById('userInitial').innerText = currentUser.name.charAt(0).toUpperCase();
+            }
+
+            if (window.Adsgram) {
+                const AdController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+                AdController.show().catch(err => console.log("Ad skipped"));
+            }
+        }
+
+        function tapToEarn() {
+            balance += 1;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('balanceCount').innerText = balance.toLocaleString();
+            const usd = (balance * rate).toFixed(2);
+            document.getElementById('usdValue').innerText = usd;
+            document.getElementById('walletUsd').innerText = '$' + usd;
+        }
+
+        function switchTab(tab, element) {
+            document.querySelectorAll('.content-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            if (tab === 'home') document.getElementById('view-home').classList.add('active');
+            if (tab === 'earn') document.getElementById('view-earn').classList.add('active');
+            if (tab === 'wallet') document.getElementById('view-wallet').classList.add('active');
+
+            element.classList.add('active');
+        }
+
+        function showAdAndReward(coins) {
+            if (window.Adsgram) {
+                const AdController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+                AdController.show().then(() => {
+                    balance += coins;
+                    updateUI();
+                    alert("অভিনন্দন! " + coins + " কয়েন ক্লেইম করা হয়েছে।");
+                }).catch(() => {
+                    alert("অ্যাডটি সম্পূর্ণ দেখা হয়নি!");
+                });
+            } else {
+                balance += coins;
+                updateUI();
+            }
+        }
+
+        function spinWheel() {
+            const rewards = [10, 50, 100, 200, 500, 1000];
+            const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+            alert("স্পিনে পেয়েছেন: " + randomReward + " কয়েন! ক্লেইম করতে অ্যাড দেখুন।");
+            showAdAndReward(randomReward);
+        }
+
+        function completeTask(type, reward) {
+            if (!tasksDone.channel) {
+                window.open('https://t.me/YourChannelUsername', '_blank');
+                balance += reward;
+                tasksDone.channel = true;
+                updateUI();
+                
+                const btn = document.getElementById('btnChannel');
+                btn.innerText = 'Done';
+                btn.style.background = 'rgba(255,255,255,0.1)';
+                alert('টাস্ক সম্পন্ন হয়েছে!');
+            }
+        }
+
+        function requestWithdraw() {
+            const address = document.getElementById('bep20Address').value.trim();
+
+            if (balance < 5000) {
+                alert('উইথড্র করার জন্য সর্বনিম্ন ৫,০০০ কয়েন প্রয়োজন!');
+                return;
+            }
+
+            if (!address.startsWith('0x') || address.length < 40) {
+                alert('সঠিক BEP-20 (USDT) অ্যাড্রেস দিন!');
+                return;
+            }
+
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            withdrawBtn.innerText = "Processing...";
+            withdrawBtn.disabled = true;
+
+            const usdAmount = (balance * rate).toFixed(2);
+            
+            const messageText = `🚨 *NEW WITHDRAW REQUEST!* 🚨\n\n` +
+                                `👤 *User:* ${currentUser.name} (${currentUser.username})\n` +
+                                `💰 *Coins:* ${balance} Coins ($${usdAmount} USDT)\n` +
+                                `📍 *BEP-20 Address:* \`${address}\``;
+
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert('আপনার উইথড্র রিকোয়েস্ট সফলভাবে এডমিনের কাছে সাবমিট হয়েছে!');
+                        balance -= 5000;
+                        updateUI();
+                        document.getElementById('bep20Address').value = '';
+                    } else {
+                        alert('উইথড্র সাবমিট করতে সমস্যা হয়েছে! পরে চেষ্টা করুন।');
+                    }
+                })
+                .catch(err => {
+                    alert('নেটওয়ার্ক সমস্যা! পরে আবার চেষ্টা করুন।');
+                })
+                .finally(() => {
+                    withdrawBtn.innerText = "Withdraw USDT";
+                    withdrawBtn.disabled = false;
+                });
+        }
+    </script>
+</body>
+</html>
