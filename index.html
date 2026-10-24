@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,9 +18,21 @@
       padding: 15px;
       min-height: 100vh;
     }
-    h1 { color: #f39c12; margin-bottom: 5px; font-size: 26px; }
+    h1 { color: #f39c12; margin-bottom: 5px; font-size: 26px; font-weight: 800; }
     p { font-size: 13px; color: #a0a5b5; margin-top: 0; }
     
+    .notice-box {
+      background: rgba(243, 156, 18, 0.15);
+      border: 1px solid #f39c12;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 15px;
+      color: #f1c40f;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
     .card {
       background: #181b28;
       border: 1px solid #282c3f;
@@ -29,7 +41,7 @@
       margin-bottom: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .balance-title { font-size: 13px; color: #8890a6; text-transform: uppercase; letter-spacing: 1px; }
+    .balance-title { font-size: 12px; color: #8890a6; text-transform: uppercase; letter-spacing: 1px; }
     .balance { font-size: 34px; font-weight: bold; color: #00f2fe; margin: 8px 0; }
     
     button {
@@ -53,7 +65,7 @@
     .withdraw-btn { background: linear-gradient(45deg, #00c6ff, #0072ff); box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3); }
     .tap-btn { background: linear-gradient(45deg, #ff416c, #ff4b2b); font-size: 22px; padding: 22px; border-radius: 50%; width: 110px; height: 110px; margin: 12px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 15px rgba(255, 65, 108, 0.4); }
     
-    input {
+    select, input {
       width: 85%;
       padding: 10px;
       border-radius: 8px;
@@ -70,62 +82,73 @@
 <body>
 
   <h1>🐅 Tiger Waves 🌊</h1>
-  <p>গেম খেলুন, রেফার করুন এবং ইনকাম করুন!</p>
+  <p>Play Games, Invite Friends & Earn Rewards!</p>
 
-  <!-- ব্যালেন্স ডিসপ্লে -->
-  <div class="card">
-    <div class="balance-title">আপনার মোট ব্যালেন্স</div>
-    <div class="balance"><span id="balance">0</span> Coins</div>
-    <p>রেফার সংখ্যা: <span id="referCount" style="color:#38ef7d; font-weight:bold;">0</span> / 5 জন</p>
+  <!-- Notice Banner -->
+  <div class="notice-box">
+    📢 <b>Important Announcement:</b> Coin value will increase very soon! Earn and hold maximum coins now before listing! 🚀
   </div>
 
-  <!-- ১. ট্যাপ ট্যাপ গেম -->
+  <!-- Balance Display -->
   <div class="card">
-    <h3>👆 ট্যাপ টু আর্ন</h3>
-    <p>স্ক্রিনে ট্যাপ করে কয়েন সংগ্রহ করুন</p>
+    <div class="balance-title">Total Balance</div>
+    <div class="balance"><span id="balance">0</span> Coins</div>
+    <p style="margin-bottom:0;">Referrals: <span id="referCount" style="color:#38ef7d; font-weight:bold;">0</span> / 5 Users</p>
+  </div>
+
+  <!-- 1. Tap to Earn Game -->
+  <div class="card">
+    <h3>👆 Tap to Earn</h3>
+    <p>Tap the button below to earn instant coins</p>
     <button class="tap-btn" onclick="tapEarn()">🐅 TAP</button>
   </div>
 
-  <!-- ২. লাকি স্পিন -->
+  <!-- 2. Lucky Spin Game -->
   <div class="card">
-    <h3>🎰 লাকি স্পিন (১-৫০০ Coins)</h3>
-    <p>স্পিন ঘুরিয়ে ভাগ্য পরীক্ষা করুন</p>
-    <button id="spinBtn" onclick="spinWheel()">🌀 স্পিন ঘুরান</button>
+    <h3>🎰 Lucky Spin (1-500 Coins)</h3>
+    <p>Spin the wheel to test your luck!</p>
+    <button id="spinBtn" onclick="spinWheel()">🌀 Spin Wheel</button>
     <div id="spinContainer" style="display:none;">
       <div id="spinResult" class="result-text"></div>
-      <button class="claim-btn" onclick="claimReward('spin')">📺 অ্যাড দেখে Claim করুন</button>
+      <button class="claim-btn" onclick="claimReward('spin')">📺 Watch Ad to Claim</button>
     </div>
   </div>
 
-  <!-- ৩. ম্যাথ কুইজ -->
+  <!-- 3. Math Quiz Game -->
   <div class="card">
-    <h3>🔢 ম্যাথ কুইজ</h3>
-    <p id="quizProblem">প্রশ্ন লোড হচ্ছে...</p>
-    <input type="number" id="quizAnswer" placeholder="উত্তর লিখুন">
-    <button id="quizCheckBtn" onclick="checkQuiz()">উত্তর জমা দিন</button>
+    <h3>🔢 Math Quiz</h3>
+    <p id="quizProblem">Loading question...</p>
+    <input type="number" id="quizAnswer" placeholder="Enter your answer">
+    <button id="quizCheckBtn" onclick="checkQuiz()">Submit Answer</button>
     <div id="quizContainer" style="display:none;">
       <div id="quizResult" class="result-text"></div>
-      <button class="claim-btn" onclick="claimReward('quiz')">📺 অ্যাড দেখে Claim করুন (+50 Coins)</button>
+      <button class="claim-btn" onclick="claimReward('quiz')">📺 Watch Ad to Claim (+50 Coins)</button>
     </div>
   </div>
 
-  <!-- ৪. রেফার ও আর্ন সেকশন -->
+  <!-- 4. Refer & Earn -->
   <div class="card">
-    <h3>👥 রেফার অ্যান্ড আর্ন</h3>
-    <p>প্রতি রেফারে পাবেন **৫০০ Coins**!</p>
-    <button style="background: linear-gradient(45deg, #8e44ad, #9b59b6);" onclick="copyReferLink()">🔗 রেফার লিংক কপি করুন</button>
+    <h3>👥 Refer & Earn</h3>
+    <p>Get <b>500 Coins</b> for every successful referral!</p>
+    <button style="background: linear-gradient(45deg, #8e44ad, #9b59b6);" onclick="copyReferLink()">🔗 Copy Referral Link</button>
   </div>
 
-  <!-- ৫. উইথড্র সেকশন -->
+  <!-- 5. Withdraw Section -->
   <div class="card">
-    <h3>💸 টাকা তুলুন (Withdraw)</h3>
-    <p>উইথড্র করতে সর্বনিম্ন ৫০০ Coins এবং **কমপক্ষে ৫টি রেফার** আবশ্যক!</p>
-    <input type="text" id="withdrawNum" placeholder="বিকাশ / নগদ নম্বর">
-    <button class="withdraw-btn" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+    <h3>💸 Withdraw Funds</h3>
+    <p>Requirement: Minimum 500 Coins & <b>5 Active Referrals</b> required!</p>
+    
+    <select id="withdrawMethod">
+      <option value="Binance ID">Binance Pay ID</option>
+      <option value="USDT (TRC20/BEP20)">USDT Address (TRC20/BEP20)</option>
+    </select>
+    
+    <input type="text" id="withdrawNum" placeholder="Enter Binance ID or USDT Address">
+    <button class="withdraw-btn" onclick="requestWithdraw()">Send Withdrawal Request</button>
   </div>
 
   <script>
-    // ⚙️ কনফিগারেশন সেটআপ (আপনার দেওয়া টোকেন ও আইডি যুক্ত)
+    // Configuration
     const ADSGRAM_BLOCK_ID = "55780";
     const BOT_TOKEN = "8981530710:AAHg2XW2urkJjamw-zhe3u0VZcjDdmyasf8";
     const ADMIN_CHAT_ID = "8768217446";
@@ -148,13 +171,12 @@
       document.getElementById("referCount").innerText = referCount;
     }
 
-    // 🚀 অ্যাপে ঢোকার সাথে সাথেই অটোমেটিক অ্যাড
+    // Opening Ad
     window.onload = function() {
-      // যদি কেউ রেফার লিংক দিয়ে ঢুকে থাকে (যেমন: ?start=ref123)
       const urlParams = new URLSearchParams(window.location.search);
       if(urlParams.has('ref') && !localStorage.getItem("ref_counted")) {
         referCount += 1;
-        coins += 500; // রেফার বোনাস
+        coins += 500;
         localStorage.setItem("ref_counted", "true");
         updateUI();
       }
@@ -164,10 +186,10 @@
       });
     };
 
-    // 📺 Adsgram অ্যাড দেখানোর ফাংশন
+    // Show Adsgram Ad
     function showAdsgramAd(onSuccess) {
       if (typeof Adsgram === 'undefined') {
-        alert("অ্যাড লোড হচ্ছে না, পরে আবার চেষ্টা করুন!");
+        alert("Ad failed to load. Please try again later!");
         if(onSuccess) onSuccess();
         return;
       }
@@ -177,17 +199,17 @@
       AdControllerInstance.show().then(() => {
         if(onSuccess) onSuccess();
       }).catch(() => {
-        alert("⚠️ রিওয়ার্ড পেতে হলে অ্যাডটি পুরো শেষ পর্যন্ত দেখতে হবে!");
+        alert("⚠️ You must watch the complete ad to claim rewards!");
       });
     }
 
-    // 👆 ট্যাপ গেম লজিক
+    // Tap Game
     function tapEarn() {
       coins += 1;
       updateUI();
     }
 
-    // 🎰 স্পিন লজিক
+    // Spin Game
     function spinWheel() {
       const btn = document.getElementById("spinBtn");
       btn.disabled = true;
@@ -195,19 +217,19 @@
 
       setTimeout(() => {
         pendingReward = Math.floor(Math.random() * 500) + 1;
-        document.getElementById("spinResult").innerText = `🎉 আপনি পেয়েছেন ${pendingReward} Coins!`;
+        document.getElementById("spinResult").innerText = `🎉 You won ${pendingReward} Coins!`;
         document.getElementById("spinContainer").style.display = "block";
         btn.disabled = false;
       }, 1000);
     }
 
-    // 🔢 কুইজ লজিক
+    // Quiz Game
     let num1, num2, answer;
     function generateQuiz() {
       num1 = Math.floor(Math.random() * 20) + 1;
       num2 = Math.floor(Math.random() * 20) + 1;
       answer = num1 + num2;
-      document.getElementById("quizProblem").innerText = `প্রশ্ন: ${num1} + ${num2} = ?`;
+      document.getElementById("quizProblem").innerText = `Question: ${num1} + ${num2} = ?`;
       document.getElementById("quizContainer").style.display = "none";
       document.getElementById("quizCheckBtn").disabled = false;
     }
@@ -217,20 +239,20 @@
       const userAnswer = parseInt(document.getElementById("quizAnswer").value);
       if (userAnswer === answer) {
         pendingReward = 50;
-        document.getElementById("quizResult").innerText = "✅ সঠিক উত্তর!";
+        document.getElementById("quizResult").innerText = "✅ Correct Answer!";
         document.getElementById("quizContainer").style.display = "block";
         document.getElementById("quizCheckBtn").disabled = true;
       } else {
-        alert("❌ ভুল উত্তর, আবার চেষ্টা করুন!");
+        alert("❌ Incorrect answer, please try again!");
       }
     }
 
-    // 🎁 Claim করার সময় অ্যাড
+    // Claim Reward
     function claimReward(type) {
       showAdsgramAd(() => {
         coins += pendingReward;
         updateUI();
-        alert(`🎉 সফলভাবে ${pendingReward} Coins যুক্ত হয়েছে!`);
+        alert(`🎉 Successfully claimed ${pendingReward} Coins!`);
         
         if (type === 'spin') {
           document.getElementById("spinContainer").style.display = "none";
@@ -242,34 +264,35 @@
       });
     }
 
-    // 🔗 রেফার লিংক কপি
+    // Copy Referral Link
     function copyReferLink() {
       const user = tg.initDataUnsafe.user || { id: "12345" };
       const refLink = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
       navigator.clipboard.writeText(refLink).then(() => {
-        alert("✅ আপনার রেফার লিংক কপি হয়েছে! বন্ধুদের সাথে শেয়ার করুন (প্রতি রেফারে ৫০০ Coins)।");
+        alert("✅ Referral link copied! Share it with friends (500 Coins per referral).");
       });
     }
 
-    // 💸 উইথড্র রিকোয়েস্ট লজিক (৫ রেফার ও ৫০০ কয়েন চেক)
+    // Withdrawal Request
     function requestWithdraw() {
-      const num = document.getElementById("withdrawNum").value;
+      const method = document.getElementById("withdrawMethod").value;
+      const address = document.getElementById("withdrawNum").value;
       
       if (referCount < 5) {
-        alert(`⚠️ উইথড্র করতে হলে আপনাকে কমপক্ষে ৫টি রেফার করতে হবে! আপনার বর্তমান রেফার: ${referCount}/5`);
+        alert(`⚠️ Withdrawal requires at least 5 referrals! Your current referrals: ${referCount}/5`);
         return;
       }
       if (coins < 500) {
-        alert("⚠️ উইথড্র করতে সর্বনিম্ন ৫০০ Coins লাগবে!");
+        alert("⚠️ Minimum 500 Coins required to withdraw!");
         return;
       }
-      if (!num) {
-        alert("⚠️ অনুগ্রহ করে বিকাশ বা নগদ নম্বর লিখুন!");
+      if (!address) {
+        alert("⚠️ Please enter your Binance ID or USDT Address!");
         return;
       }
 
-      const user = tg.initDataUnsafe.user || { first_name: "ইউজার" };
-      const msg = `📥 *নতুন উইথড্র রিকোয়েস্ট!*\n\n👤 নাম: ${user.first_name}\n📱 নম্বর: ${num}\n💰 পয়েন্ট: ${coins} Coins\n👥 মোট রেফার: ${referCount}টি`;
+      const user = tg.initDataUnsafe.user || { first_name: "User" };
+      const msg = `📥 *New Withdrawal Request!*\n\n👤 Name: ${user.first_name}\n💳 Method: ${method}\n📍 Address/ID: \`${address}\`\n💰 Balance: ${coins} Coins\n👥 Referrals: ${referCount}`;
 
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
@@ -280,12 +303,12 @@
           parse_mode: "Markdown"
         })
       }).then(() => {
-        alert("✅ উইথড্র রিকোয়েস্ট সফলভাবে অ্যাডমিনের কাছে পাঠানো হয়েছে!");
+        alert("✅ Withdrawal request submitted successfully!");
         coins = 0;
         updateUI();
         document.getElementById("withdrawNum").value = "";
       }).catch(() => {
-        alert("উইথড্র রিকোয়েস্ট পাঠাতে সমস্যা হয়েছে!");
+        alert("Failed to send withdrawal request!");
       });
     }
   </script>
