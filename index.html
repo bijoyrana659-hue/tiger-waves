@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiger Waves - Thunder Waves Edition</title>
+    <title>Tiger Waves - Pro Gaming & Earn</title>
     <!-- Monetag Official SDK -->
     <script src='//libtl.com/sdk.js' data-zone='12118520' data-sdk='show_12118520'></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -139,53 +139,113 @@
             z-index: 10;
         }
         /* Game Selection Cards */
-        .game-card {
+        .game-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .game-item {
             background: linear-gradient(145deg, #151b24, #10151c);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 15px;
-            margin-bottom: 15px;
-            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
             transition: 0.2s;
         }
-        .game-card:hover {
+        .game-item:hover {
             border-color: var(--accent-gold);
             box-shadow: var(--glow-shadow);
         }
-        .game-card h4 {
+        .game-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(243, 186, 47, 0.1);
+            border: 1px solid var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
             color: var(--accent-gold);
-            margin-bottom: 5px;
+        }
+        .game-details {
+            flex: 1;
+            margin-left: 15px;
+            text-align: left;
+        }
+        .game-details h4 {
+            color: var(--accent-gold);
             font-size: 15px;
         }
-        .difficulty-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
+        .game-details p {
+            font-size: 11px;
+            color: var(--text-muted);
         }
-        .diff-btn {
-            flex: 1;
-            padding: 9px 5px;
-            border-radius: 8px;
+
+        /* Modal / Pop-ups */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--card-bg);
             border: 1px solid var(--accent-gold);
-            background: rgba(243, 186, 47, 0.05);
-            color: var(--accent-gold);
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
+            border-radius: 18px;
+            padding: 25px;
+            width: 100%;
+            max-width: 350px;
             text-align: center;
+            box-shadow: var(--glow-shadow);
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .diff-option-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
             transition: 0.2s;
         }
-        .diff-btn.hard {
-            border-color: #ff4757;
-            color: #ff4757;
-            background: rgba(255, 71, 87, 0.05);
+        .diff-option-btn:hover {
+            border-color: var(--accent-gold);
+            background: rgba(243, 186, 47, 0.1);
         }
-        .diff-btn:active {
-            background: var(--accent-gold);
-            color: #000;
-            transform: scale(0.95);
+        .diff-tag {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #ff4757;
+            color: #fff;
+            font-weight: 700;
         }
+        .diff-tag.easy { background: #2ecc71; }
+        .diff-tag.med { background: #f39c12; }
+
         .input-field {
             width: 100%;
             padding: 12px;
@@ -219,7 +279,6 @@
             gap: 5px;
             font-size: 12px;
             cursor: pointer;
-            transition: 0.2s;
         }
         .nav-item.active {
             color: var(--accent-gold);
@@ -260,65 +319,61 @@
 
         <!-- Games Tab -->
         <div id="tab-earn" class="tab-content">
-            <h3 style="margin-bottom: 15px; color: var(--accent-gold); text-shadow: 0 0 10px rgba(243,186,47,0.4);">Arcade Games & Earn</h3>
+            <h3 style="margin-bottom: 15px; color: var(--accent-gold);">Play Arcade Games</h3>
             
-            <div class="game-card">
-                <h4><i class="fa-solid fa-worm"></i> 1. Snake Master</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Navigate snake, eat food and score high!</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Snake Master', 'Easy', 100)">Easy (+100)</button>
-                    <button class="diff-btn" onclick="playGame('Snake Master', 'Medium', 150)">Med (+150)</button>
-                    <button class="diff-btn hard" onclick="playGame('Snake Master', 'Hard', 200)">Hard (+200)</button>
+            <div class="game-card-list">
+                <div class="game-item" onclick="openGameModal('Snake Master')">
+                    <div class="game-icon"><i class="fa-solid fa-worm"></i></div>
+                    <div class="game-details">
+                        <h4>1. Snake Master</h4>
+                        <p>Eat food & score high points</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
-            </div>
 
-            <div class="game-card">
-                <h4><i class="fa-solid fa-jet-fighter"></i> 2. Sky Shooter Elite</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Shoot enemy jets in intense air battle.</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Sky Shooter', 'Easy', 150)">Easy (+150)</button>
-                    <button class="diff-btn" onclick="playGame('Sky Shooter', 'Medium', 200)">Med (+200)</button>
-                    <button class="diff-btn hard" onclick="playGame('Sky Shooter', 'Hard', 300)">Hard (+300)</button>
+                <div class="game-item" onclick="openGameModal('Sky Shooter Elite')">
+                    <div class="game-icon"><i class="fa-solid fa-jet-fighter"></i></div>
+                    <div class="game-details">
+                        <h4>2. Sky Shooter Elite</h4>
+                        <p>Air combat jet war action</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
-            </div>
 
-            <div class="game-card">
-                <h4><i class="fa-solid fa-crow"></i> 3. Flappy Bird Dash</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Fly through obstacles without hitting pipes.</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Flappy Bird', 'Easy', 120)">Easy (+120)</button>
-                    <button class="diff-btn" onclick="playGame('Flappy Bird', 'Medium', 180)">Med (+180)</button>
-                    <button class="diff-btn hard" onclick="playGame('Flappy Bird', 'Hard', 250)">Hard (+250)</button>
+                <div class="game-item" onclick="openGameModal('Flappy Bird Dash')">
+                    <div class="game-icon"><i class="fa-solid fa-crow"></i></div>
+                    <div class="game-details">
+                        <h4>3. Flappy Bird Dash</h4>
+                        <p>Fly through pipes obstacle</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
-            </div>
 
-            <div class="game-card">
-                <h4><i class="fa-solid fa-car-side"></i> 4. Car Racing Madness</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Dodge traffic cars on high-speed highway.</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Car Racing', 'Easy', 130)">Easy (+130)</button>
-                    <button class="diff-btn" onclick="playGame('Car Racing', 'Medium', 190)">Med (+190)</button>
-                    <button class="diff-btn hard" onclick="playGame('Car Racing', 'Hard', 280)">Hard (+280)</button>
+                <div class="game-item" onclick="openGameModal('Car Racing Madness')">
+                    <div class="game-icon"><i class="fa-solid fa-car-side"></i></div>
+                    <div class="game-details">
+                        <h4>4. Car Racing Madness</h4>
+                        <p>High speed highway traffic dash</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
-            </div>
 
-            <div class="game-card">
-                <h4><i class="fa-solid fa-utensils"></i> 5. Knife Hit Challenge</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Throw knives into spinning target log.</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Knife Hit', 'Easy', 110)">Easy (+110)</button>
-                    <button class="diff-btn" onclick="playGame('Knife Hit', 'Medium', 170)">Med (+170)</button>
-                    <button class="diff-btn hard" onclick="playGame('Knife Hit', 'Hard', 240)">Hard (+240)</button>
+                <div class="game-item" onclick="openGameModal('Knife Hit Challenge')">
+                    <div class="game-icon"><i class="fa-solid fa-utensils"></i></div>
+                    <div class="game-details">
+                        <h4>5. Knife Hit Challenge</h4>
+                        <p>Precision knife target throw</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
-            </div>
 
-            <div class="game-card">
-                <h4><i class="fa-solid fa-hashtag"></i> 6. Tic Tac Toe Pro</h4>
-                <p style="font-size: 12px; color: var(--text-muted);">Beat AI bot in classic tic-tac-toe game.</p>
-                <div class="difficulty-buttons">
-                    <button class="diff-btn" onclick="playGame('Tic Tac Toe', 'Easy', 100)">Easy (+100)</button>
-                    <button class="diff-btn" onclick="playGame('Tic Tac Toe', 'Medium', 160)">Med (+160)</button>
-                    <button class="diff-btn hard" onclick="playGame('Tic Tac Toe', 'Hard', 220)">Hard (+220)</button>
+                <div class="game-item" onclick="openGameModal('Tic Tac Toe Pro')">
+                    <div class="game-icon"><i class="fa-solid fa-hashtag"></i></div>
+                    <div class="game-details">
+                        <h4>6. Tic Tac Toe Pro</h4>
+                        <p>Classic puzzle strategy battle</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
                 </div>
             </div>
         </div>
@@ -326,19 +381,19 @@
         <!-- Tasks Tab -->
         <div id="tab-tasks" class="tab-content">
             <h3 style="margin-bottom: 15px; color: var(--accent-gold);">Special Tasks</h3>
-            <div class="game-card" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4>Join Official Channel</h4>
-                    <p style="font-size: 12px; color: var(--accent-gold);">+500 TWG Coins</p>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+                <div style="text-align: left;">
+                    <h4 style="color: var(--accent-gold);">Join Official Channel</h4>
+                    <p style="font-size: 12px; color: var(--text-muted);">+500 TWG Coins</p>
                 </div>
-                <button class="diff-btn" onclick="claimTask(500, this)" style="padding: 8px 15px;">Claim</button>
+                <button class="btn" onclick="claimTask(500, this)" style="width: auto; padding: 8px 15px; margin: 0;">Claim</button>
             </div>
-            <div class="game-card" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4>Subscribe YouTube Channel</h4>
-                    <p style="font-size: 12px; color: var(--accent-gold);">+1000 TWG Coins</p>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+                <div style="text-align: left;">
+                    <h4 style="color: var(--accent-gold);">Subscribe YouTube Channel</h4>
+                    <p style="font-size: 12px; color: var(--text-muted);">+1000 TWG Coins</p>
                 </div>
-                <button class="diff-btn" onclick="claimTask(1000, this)" style="padding: 8px 15px;">Claim</button>
+                <button class="btn" onclick="claimTask(1000, this)" style="width: auto; padding: 8px 15px; margin: 0;">Claim</button>
             </div>
         </div>
 
@@ -346,7 +401,7 @@
         <div id="tab-refer" class="tab-content">
             <div class="card">
                 <h3>Refer & Earn</h3>
-                <p style="color: var(--text-muted); font-size: 13px; margin: 10px 0 20px;">Earn 1000 TWG for every valid referral who joins your bot.</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin: 10px 0 20px;">Earn 1000 TWG for every valid referral.</p>
                 <button class="btn" onclick="copyRefLink()"><i class="fa-solid fa-share-nodes"></i> COPY LINK</button>
             </div>
         </div>
@@ -355,19 +410,59 @@
         <div id="tab-profile" class="tab-content">
             <div class="card">
                 <h3><i class="fa-solid fa-wallet"></i> Withdraw Cash</h3>
-                <p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Rate: 10,000 TWG = ৳100 BDT ($1.00 USD)</p>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Rate: 10,000 TWG = $1.00 USD (USDT BEP-20)</p>
                 
                 <select class="input-field" id="pay-method">
+                    <option value="usdt">USDT (BEP-20 / Binance Wallet)</option>
                     <option value="bkash">Bkash Personal</option>
                     <option value="nagad">Nagad Personal</option>
-                    <option value="rocket">Rocket</option>
-                    <option value="ton">TON Wallet / Binance</option>
                 </select>
-                <input type="text" class="input-field" id="pay-number" placeholder="Enter Bkash/Nagad Number or Wallet">
+                <input type="text" class="input-field" id="pay-number" placeholder="Enter USDT BEP-20 Address or Mobile No">
                 <input type="number" class="input-field" id="pay-amount" placeholder="Minimum 10000 Coins">
                 
                 <button class="btn" onclick="requestWithdraw()"><i class="fa-solid fa-money-bill-transfer"></i> REQUEST WITHDRAW</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Game Difficulty Popup Modal -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeGameModal()">&times;</span>
+            <h3 id="modalGameTitle" style="color: var(--accent-gold); margin-bottom: 15px;">Select Mode</h3>
+            
+            <div class="diff-option-btn" onclick="startSelectedGame('Easy', 1, 100)">
+                <div>
+                    <h4 style="font-size: 14px; text-align: left;">Easy Mode</h4>
+                    <p style="font-size: 11px; color: var(--text-muted);">Reward +100 TWG</p>
+                </div>
+                <span class="diff-tag easy">EASY</span>
+            </div>
+
+            <div class="diff-option-btn" onclick="startSelectedGame('Medium', 2, 200)">
+                <div>
+                    <h4 style="font-size: 14px; text-align: left;">Medium Mode</h4>
+                    <p style="font-size: 11px; color: var(--text-muted);">Reward +200 TWG</p>
+                </div>
+                <span class="diff-tag med">MED</span>
+            </div>
+
+            <div class="diff-option-btn" onclick="startSelectedGame('Hard', 3, 300)">
+                <div>
+                    <h4 style="font-size: 14px; text-align: left;">Hard Mode</h4>
+                    <p style="font-size: 11px; color: var(--text-muted);">Reward +300 TWG</p>
+                </div>
+                <span class="diff-tag">HARD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gameplay & Ad Claim Modal -->
+    <div class="modal" id="playModal">
+        <div class="modal-content">
+            <h3 id="playTitle" style="color: var(--accent-gold); margin-bottom: 10px;">Playing Game</h3>
+            <p id="playStatus" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Please watch ads to claim your reward.</p>
+            <button class="btn" id="actionClaimBtn" onclick="proceedClaimAd()">WATCH AD & CLAIM</button>
         </div>
     </div>
 
@@ -381,12 +476,10 @@
     </div>
 
     <script>
-        // Web Audio API for Professional Click Sound Effects
+        // Web Audio API Sound Effect
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playClickSound() {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sine';
@@ -400,24 +493,31 @@
             osc.stop(audioCtx.currentTime + 0.08);
         }
 
-        // Add sound to all buttons automatically
         document.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('.game-item')) {
                 playClickSound();
             }
         });
 
         let balance = 1000;
         let spinsLeft = 3;
+        let currentGameName = '';
+        let currentMode = '';
+        let requiredAdsCount = 1;
+        let watchedAdsCount = 0;
+        let rewardCoinsValue = 100;
+        let telegramUser = "Tiger User";
+        let telegramUserId = "123456789";
 
-        // Telegram User Init
         if (window.Telegram && window.Telegram.WebApp) {
             const tg = window.Telegram.WebApp;
             tg.expand();
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const user = tg.initDataUnsafe.user;
-                document.getElementById('username').innerText = user.first_name || "Tiger User";
-                document.getElementById('user-initial').innerText = (user.first_name || "T").charAt(0).toUpperCase();
+                telegramUser = user.first_name || "Tiger User";
+                telegramUserId = user.id || "123456789";
+                document.getElementById('username').innerText = telegramUser;
+                document.getElementById('user-initial').innerText = telegramUser.charAt(0).toUpperCase();
             }
         }
 
@@ -433,7 +533,72 @@
             el.classList.add('active');
         }
 
-        // Real Canvas Wheel Setup
+        function openGameModal(gameName) {
+            currentGameName = gameName;
+            document.getElementById('modalGameTitle').innerText = gameName;
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+
+        function closeGameModal() {
+            document.getElementById('gameModal').style.display = 'none';
+        }
+
+        // Step 1: When user selects mode, show entry ad first
+        function startSelectedGame(mode, totalAds, rewardCoins) {
+            closeGameModal();
+            currentMode = mode;
+            requiredAdsCount = totalAds;
+            watchedAdsCount = 0;
+
+            document.getElementById('playTitle').innerText = `${currentGameName} [${mode}]`;
+            document.getElementById('playStatus').innerText = "Loading Entry Ad...";
+            document.getElementById('actionClaimBtn').innerText = "PLEASE WAIT...";
+            document.getElementById('actionClaimBtn').disabled = true;
+            document.getElementById('playModal').style.display = 'flex';
+
+            // Show Entry Ad
+            triggerMonetagAd(() => {
+                document.getElementById('playStatus').innerText = "Game Ready! Play and click below to claim reward.";
+                document.getElementById('actionClaimBtn').innerText = `WATCH AD TO CLAIM (0/${requiredAds})`;
+                document.getElementById('actionClaimBtn').disabled = false;
+            });
+        }
+
+        // Step 2: Handle Claim & Additional Ads based on Mode
+        function proceedClaimAd() {
+            if (watchedAdsCount < requiredAdsCount) {
+                watchedAdsCount++;
+                let remaining = requiredAdsCount - watchedAdsCount;
+
+                document.getElementById('actionClaimBtn').innerText = "LOADING AD...";
+                document.getElementById('actionClaimBtn').disabled = true;
+
+                triggerMonetagAd(() => {
+                    if (watchedAdsCount < requiredAdsCount) {
+                        document.getElementById('playStatus').innerText = `Please watch another ad! ${remaining} more ad(s) required to claim.`;
+                        document.getElementById('actionClaimBtn').innerText = `WATCH NEXT AD (${watchedAdsCount}/${requiredAdsCount})`;
+                        document.getElementById('actionClaimBtn').disabled = false;
+                    } else {
+                        // All required ads finished, give reward
+                        let coinReward = currentMode === 'Easy' ? 100 : (currentMode === 'Medium' ? 200 : 300);
+                        updateBalance(coinReward);
+                        document.getElementById('playModal').style.display = 'none';
+                        alert(`Successfully Claimed +${coinReward} TWG Coins!`);
+                    }
+                });
+            }
+        }
+
+        function triggerMonetagAd(callback) {
+            if (typeof show_12118520 === 'function') {
+                show_12118520().then(() => callback()).catch(() => callback());
+            } else {
+                alert("Loading Monetag Advertisement...");
+                setTimeout(() => callback(), 1500);
+            }
+        }
+
+        /* Wheel Canvas */
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const rewards = [100, 50, 500, 200, 1000, 0, 300, 250];
@@ -473,17 +638,7 @@
                 return;
             }
 
-            // Trigger Monetag Ad SDK
-            if (typeof show_12118520 === 'function') {
-                show_12118520().then(() => {
-                    executeSpinLogic();
-                }).catch(() => {
-                    executeSpinLogic();
-                });
-            } else {
-                alert("Loading Monetag Advertisement...");
-                setTimeout(executeSpinLogic, 1500);
-            }
+            triggerMonetagAd(() => executeSpinLogic());
         }
 
         function executeSpinLogic() {
@@ -508,49 +663,15 @@
             }, 4000);
         }
 
-        function playGame(gameName, level, rewardCoins) {
-            // Trigger Monetag Ad SDK before game reward
-            if (typeof show_12118520 === 'function') {
-                show_12118520().then(() => {
-                    completeGameReward(gameName, level, rewardCoins);
-                }).catch(() => {
-                    completeGameReward(gameName, level, rewardCoins);
-                });
-            } else {
-                alert(`Loading Monetag Ad for ${gameName} (${level} Mode)...`);
-                setTimeout(() => {
-                    completeGameReward(gameName, level, rewardCoins);
-                }, 2000);
-            }
-        }
-
-        function completeGameReward(gameName, level, rewardCoins) {
-            alert(`Game Complete! You played ${gameName} [${level}] and won ${rewardCoins} TWG Coins!`);
-            updateBalance(rewardCoins);
-        }
-
         function claimTask(reward, btn) {
-            if (typeof show_12118520 === 'function') {
-                show_12118520().then(() => {
-                    completeTaskReward(reward, btn);
-                }).catch(() => {
-                    completeTaskReward(reward, btn);
-                });
-            } else {
-                alert("Loading Monetag ad to verify task...");
-                setTimeout(() => {
-                    completeTaskReward(reward, btn);
-                }, 1500);
-            }
-        }
-
-        function completeTaskReward(reward, btn) {
-            btn.innerText = "Claimed";
-            btn.style.color = "#2ecc71";
-            btn.style.borderColor = "#2ecc71";
-            btn.disabled = true;
-            updateBalance(reward);
-            alert(`Successfully claimed +${reward} TWG!`);
+            triggerMonetagAd(() => {
+                btn.innerText = "Claimed";
+                btn.style.color = "#2ecc71";
+                btn.style.borderColor = "#2ecc71";
+                btn.disabled = true;
+                updateBalance(reward);
+                alert(`Successfully claimed +${reward} TWG!`);
+            });
         }
 
         function copyRefLink() {
@@ -558,16 +679,18 @@
             alert("Referral link copied to clipboard!");
         }
 
+        // Request Withdraw with Telegram Bot Notification Message
         function requestWithdraw() {
             const amount = document.getElementById('pay-amount').value;
             const number = document.getElementById('pay-number').value;
+            const method = document.getElementById('pay-method').value;
 
             if (!number) {
-                alert("Please enter your mobile number or wallet address!");
+                alert("Please enter your wallet address or account number!");
                 return;
             }
             if (amount < 10000) {
-                alert("Minimum withdrawal limit is 10,000 TWG Coins (৳100 BDT)!");
+                alert("Minimum withdrawal limit is 10,000 TWG Coins!");
                 return;
             }
             if (amount > balance) {
@@ -576,6 +699,16 @@
             }
 
             updateBalance(-amount);
+
+            // Send notification message to Telegram Bot if available
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                const messageText = `🚨 NEW WITHDRAW REQUEST 🚨\n\n👤 User: ${telegramUser}\n🆔 ID: ${telegramUserId}\n💰 Amount: ${amount} TWG\n🏦 Method: ${method.toUpperCase()}\n📬 Destination: ${number}`;
+                
+                // You can send this via bot or log it
+                console.log(messageText);
+            }
+
             alert(`Withdrawal Request of ${amount} TWG submitted successfully! Payment will be processed within 24 hours.`);
         }
     </script>
