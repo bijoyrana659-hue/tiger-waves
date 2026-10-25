@@ -1,587 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiger Waves Mini App</title>
-  <!-- Telegram Web App SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Adsgram SDK -->
-  <script src="https://sad.adsgram.ai/js/sad-index.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #fbf6ec;
-      color: #33291e;
-      text-align: center;
-      margin: 0;
-      padding: 12px 12px 90px 12px;
-      min-height: 100vh;
-    }
-    
-    /* Overlay Lock Modal */
-    #verifyModal {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(251, 246, 236, 0.98);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .modal-card {
-      background: #fff;
-      border: 1px solid #e6c280;
-      border-radius: 20px;
-      padding: 25px 20px;
-      width: 100%;
-      max-width: 350px;
-      box-shadow: 0 10px 30px rgba(230, 194, 128, 0.3);
-    }
-    .join-btn {
-      display: block;
-      background: #27a7e7;
-      color: #fff;
-      text-decoration: none;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    /* Cards & UI */
-    .card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 20px rgba(220, 200, 170, 0.25);
-      border: 1px solid #f2e5d0;
-      text-align: left;
-    }
-    
-    .balance-card {
-      background: linear-gradient(135deg, #3d3122 0%, #1f1911 100%);
-      color: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 8px 25px rgba(31, 25, 17, 0.3);
-      position: relative;
-    }
-    .balance-title { font-size: 11px; color: #b5a28f; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-    .balance-amount { font-size: 36px; font-weight: 800; color: #f3ad3c; margin: 5px 0; }
-    .usdt-text { font-size: 12px; color: #a39483; }
-
-    button {
-      background: linear-gradient(45deg, #f3ad3c, #e08b1b);
-      color: #fff;
-      border: none;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 8px;
-      box-shadow: 0 4px 15px rgba(243, 173, 60, 0.35);
-      transition: 0.2s;
-    }
-    button:active { transform: scale(0.98); }
-    button:disabled { background: #dcd6ce; color: #8c8378; box-shadow: none; }
-
-    .game-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 10px;
-    }
-    .game-card {
-      background: #fff;
-      border: 1px solid #f2e5d0;
-      border-radius: 16px;
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    }
-    .game-icon { font-size: 32px; margin-bottom: 5px; }
-    .game-title { font-weight: bold; font-size: 13px; color: #2d241b; }
-    .game-reward { font-size: 11px; color: #d9822b; font-weight: bold; margin-top: 3px; }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      border: 1px solid #f2e5d0;
-      border-radius: 16px;
-      padding: 12px 15px;
-      margin-bottom: 10px;
-    }
-    .task-info { text-align: left; }
-    .task-title { font-size: 14px; font-weight: bold; color: #2d241b; margin: 0 0 4px 0; }
-    .task-reward { font-size: 12px; color: #d9822b; font-weight: bold; }
-    .action-btn { width: auto; padding: 8px 16px; margin: 0; font-size: 13px; }
-
-    /* Wheel Canvas */
-    .wheel-wrapper {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      margin: 15px auto;
-    }
-    #wheelCanvas {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 4px solid #f3ad3c;
-      transition: transform 4s cubic-bezier(0.15, 0.99, 0.18, 0.99);
-    }
-    .wheel-pointer {
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0; height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 20px solid #e74c3c;
-      z-index: 10;
-    }
-
-    /* Tab Visibility */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* Bottom Navigation Bar */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%;
-      background: #ffffff;
-      border-top: 1px solid #f2e5d0;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-      z-index: 1000;
-    }
-    .nav-item {
-      color: #9e9182;
-      text-decoration: none;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      width: 20%;
-      font-weight: 600;
-    }
-    .nav-item .icon { font-size: 20px; margin-bottom: 2px; }
-    .nav-item.active { color: #e08b1b; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiger Waves - Thunder Waves Edition</title>
+    <!-- Monetag Official SDK -->
+    <script src='//libtl.com/sdk.js' data-zone='12118520' data-sdk='show_12118520'></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #151b24;
+            --accent-gold: #f3ba2f;
+            --accent-gradient: linear-gradient(135deg, #f3ba2f 0%, #d48806 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(243, 186, 47, 0.4);
+            --glow-shadow: 0 0 15px rgba(243, 186, 47, 0.4);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            padding: 15px 20px;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            box-shadow: var(--glow-shadow);
+        }
+        .balance-card {
+            background: rgba(243, 186, 47, 0.1);
+            border: 1px solid var(--accent-gold);
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            box-shadow: var(--glow-shadow);
+        }
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4), var(--glow-shadow);
+        }
+        .btn {
+            background: var(--accent-gradient);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.4);
+            margin-top: 10px;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        /* Wheel Styles */
+        .wheel-container {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            margin: 15px auto;
+        }
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid var(--accent-gold);
+            box-shadow: var(--glow-shadow);
+            transition: transform 4s cubic-bezier(0.15, 0.95, 0.15, 1);
+        }
+        .wheel-pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 22px solid #ff4757;
+            z-index: 10;
+        }
+        /* Game Selection Cards */
+        .game-card {
+            background: linear-gradient(145deg, #151b24, #10151c);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .game-card:hover {
+            border-color: var(--accent-gold);
+            box-shadow: var(--glow-shadow);
+        }
+        .game-card h4 {
+            color: var(--accent-gold);
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        .difficulty-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .diff-btn {
+            flex: 1;
+            padding: 9px 5px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-gold);
+            background: rgba(243, 186, 47, 0.05);
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .diff-btn.hard {
+            border-color: #ff4757;
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.05);
+        }
+        .diff-btn:active {
+            background: var(--accent-gold);
+            color: #000;
+            transform: scale(0.95);
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: #0b0e14;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        /* Navigation Bar */
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-item.active {
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(243, 186, 47, 0.6);
+        }
+        .nav-item i {
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Verification Modal -->
-  <div id="verifyModal">
-    <div class="modal-card">
-      <h2 style="color:#d9822b; margin-top:0;">🔒 Action Required</h2>
-      <p style="color:#6e6153; font-size:13px;">Join official channel & group to access the app!</p>
-      
-      <a href="https://t.me/tigerwavas1" target="_blank" class="join-btn">📢 Join Official Channel</a>
-      <a href="https://t.me/tigerwavas" target="_blank" class="join-btn" style="background:#0088cc;">💬 Join Group</a>
-      
-      <button onclick="verifyMembership()" style="margin-top:12px;">✅ Verify & Continue</button>
-      <div id="verifyStatus" style="font-size:12px; margin-top:8px; color:#e74c3c;"></div>
-    </div>
-  </div>
-
-  <!-- TAB 1: HOME -->
-  <div id="tab-home" class="tab-content active">
-    <!-- User Top Bar -->
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <div id="userAvatar" style="width:45px; height:45px; background:#f3ad3c; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff; font-size:18px;">T</div>
-        <div style="text-align:left;">
-          <div id="userName" style="font-weight:bold; font-size:15px;">Tiger User</div>
-          <div style="font-size:11px; color:#a39483;">Lv 1 • Active Miner</div>
+    <div class="header">
+        <div class="user-info">
+            <div class="user-avatar" id="user-initial">TW</div>
+            <span id="username" style="font-weight: 600; font-size: 14px;">Tiger User</span>
         </div>
-      </div>
+        <div class="balance-card">
+            <i class="fa-solid fa-coins"></i>
+            <span id="balance">1000</span> TWG
+        </div>
     </div>
 
-    <!-- Balance Card -->
-    <div class="balance-card">
-      <div class="balance-title">Total Balance</div>
-      <div class="balance-amount"><span id="balance">0</span></div>
-      <div class="usdt-text">⚡ TIGER &nbsp;•&nbsp; $<span id="usdtVal">0.00</span> USDT</div>
+    <div class="content-area">
+        <!-- Home Tab -->
+        <div id="tab-home" class="tab-content active">
+            <div class="card">
+                <h2 style="color: var(--accent-gold); margin-bottom: 5px; text-shadow: 0 0 10px rgba(243,186,47,0.5);">Daily Lucky Spin</h2>
+                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">Spins left today: <span id="spins-left" style="color: #fff; font-weight: bold;">3</span></p>
+                
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                </div>
+                <button class="btn" onclick="triggerSpin()">SPIN & WIN</button>
+            </div>
+        </div>
+
+        <!-- Games Tab -->
+        <div id="tab-earn" class="tab-content">
+            <h3 style="margin-bottom: 15px; color: var(--accent-gold); text-shadow: 0 0 10px rgba(243,186,47,0.4);">Arcade Games & Earn</h3>
+            
+            <div class="game-card">
+                <h4><i class="fa-solid fa-worm"></i> 1. Snake Master</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Navigate snake, eat food and score high!</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Snake Master', 'Easy', 100)">Easy (+100)</button>
+                    <button class="diff-btn" onclick="playGame('Snake Master', 'Medium', 150)">Med (+150)</button>
+                    <button class="diff-btn hard" onclick="playGame('Snake Master', 'Hard', 200)">Hard (+200)</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <h4><i class="fa-solid fa-jet-fighter"></i> 2. Sky Shooter Elite</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Shoot enemy jets in intense air battle.</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Sky Shooter', 'Easy', 150)">Easy (+150)</button>
+                    <button class="diff-btn" onclick="playGame('Sky Shooter', 'Medium', 200)">Med (+200)</button>
+                    <button class="diff-btn hard" onclick="playGame('Sky Shooter', 'Hard', 300)">Hard (+300)</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <h4><i class="fa-solid fa-crow"></i> 3. Flappy Bird Dash</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Fly through obstacles without hitting pipes.</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Flappy Bird', 'Easy', 120)">Easy (+120)</button>
+                    <button class="diff-btn" onclick="playGame('Flappy Bird', 'Medium', 180)">Med (+180)</button>
+                    <button class="diff-btn hard" onclick="playGame('Flappy Bird', 'Hard', 250)">Hard (+250)</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <h4><i class="fa-solid fa-car-side"></i> 4. Car Racing Madness</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Dodge traffic cars on high-speed highway.</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Car Racing', 'Easy', 130)">Easy (+130)</button>
+                    <button class="diff-btn" onclick="playGame('Car Racing', 'Medium', 190)">Med (+190)</button>
+                    <button class="diff-btn hard" onclick="playGame('Car Racing', 'Hard', 280)">Hard (+280)</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <h4><i class="fa-solid fa-utensils"></i> 5. Knife Hit Challenge</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Throw knives into spinning target log.</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Knife Hit', 'Easy', 110)">Easy (+110)</button>
+                    <button class="diff-btn" onclick="playGame('Knife Hit', 'Medium', 170)">Med (+170)</button>
+                    <button class="diff-btn hard" onclick="playGame('Knife Hit', 'Hard', 240)">Hard (+240)</button>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <h4><i class="fa-solid fa-hashtag"></i> 6. Tic Tac Toe Pro</h4>
+                <p style="font-size: 12px; color: var(--text-muted);">Beat AI bot in classic tic-tac-toe game.</p>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" onclick="playGame('Tic Tac Toe', 'Easy', 100)">Easy (+100)</button>
+                    <button class="diff-btn" onclick="playGame('Tic Tac Toe', 'Medium', 160)">Med (+160)</button>
+                    <button class="diff-btn hard" onclick="playGame('Tic Tac Toe', 'Hard', 220)">Hard (+220)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div id="tab-tasks" class="tab-content">
+            <h3 style="margin-bottom: 15px; color: var(--accent-gold);">Special Tasks</h3>
+            <div class="game-card" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4>Join Official Channel</h4>
+                    <p style="font-size: 12px; color: var(--accent-gold);">+500 TWG Coins</p>
+                </div>
+                <button class="diff-btn" onclick="claimTask(500, this)" style="padding: 8px 15px;">Claim</button>
+            </div>
+            <div class="game-card" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4>Subscribe YouTube Channel</h4>
+                    <p style="font-size: 12px; color: var(--accent-gold);">+1000 TWG Coins</p>
+                </div>
+                <button class="diff-btn" onclick="claimTask(1000, this)" style="padding: 8px 15px;">Claim</button>
+            </div>
+        </div>
+
+        <!-- Refer Tab -->
+        <div id="tab-refer" class="tab-content">
+            <div class="card">
+                <h3>Refer & Earn</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin: 10px 0 20px;">Earn 1000 TWG for every valid referral who joins your bot.</p>
+                <button class="btn" onclick="copyRefLink()"><i class="fa-solid fa-share-nodes"></i> COPY LINK</button>
+            </div>
+        </div>
+
+        <!-- Profile & Withdrawal Tab -->
+        <div id="tab-profile" class="tab-content">
+            <div class="card">
+                <h3><i class="fa-solid fa-wallet"></i> Withdraw Cash</h3>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Rate: 10,000 TWG = ৳100 BDT ($1.00 USD)</p>
+                
+                <select class="input-field" id="pay-method">
+                    <option value="bkash">Bkash Personal</option>
+                    <option value="nagad">Nagad Personal</option>
+                    <option value="rocket">Rocket</option>
+                    <option value="ton">TON Wallet / Binance</option>
+                </select>
+                <input type="text" class="input-field" id="pay-number" placeholder="Enter Bkash/Nagad Number or Wallet">
+                <input type="number" class="input-field" id="pay-amount" placeholder="Minimum 10000 Coins">
+                
+                <button class="btn" onclick="requestWithdraw()"><i class="fa-solid fa-money-bill-transfer"></i> REQUEST WITHDRAW</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Daily Bonus Card -->
-    <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
-      <div>
-        <div style="font-size:11px; color:#d9822b; font-weight:bold;">DAILY BONUS</div>
-        <div style="font-size:16px; font-weight:bold; color:#2d241b;">Lucky Spin</div>
-        <div style="font-size:12px; color:#8c8378;">Spin & win free tokens daily</div>
-      </div>
-      <button onclick="switchTab('earn', document.querySelectorAll('.nav-item')[2])" class="action-btn">Play</button>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i>Home</button>
+        <button class="nav-item" onclick="switchTab('earn', this)"><i class="fa-solid fa-gamepad"></i>Games</button>
+        <button class="nav-item" onclick="switchTab('tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
+        <button class="nav-item" onclick="switchTab('refer', this)"><i class="fa-solid fa-users"></i>Refer</button>
+        <button class="nav-item" onclick="switchTab('profile', this)"><i class="fa-solid fa-wallet"></i>Withdraw</button>
     </div>
 
-    <!-- Featured Games Section -->
-    <div style="text-align:left; font-weight:bold; color:#2d241b; margin:15px 0 8px 0;">🎮 Arcade Games</div>
-    <div class="game-grid">
-      <div class="game-card">
-        <div class="game-icon">🐍</div>
-        <div class="game-title">Snake Master</div>
-        <div class="game-reward">+150 Coins</div>
-        <button onclick="playMiniGame('Snake Master', 150)" style="padding:6px; font-size:12px; margin-top:8px;">Play & Earn</button>
-      </div>
-      <div class="game-card">
-        <div class="game-icon">🚀</div>
-        <div class="game-title">Space Shooter</div>
-        <div class="game-reward">+200 Coins</div>
-        <button onclick="playMiniGame('Space Shooter', 200)" style="padding:6px; font-size:12px; margin-top:8px;">Play & Earn</button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // Web Audio API for Professional Click Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
 
-  <!-- TAB 2: TASKS (ADSGRAM) -->
-  <div id="tab-tasks" class="tab-content">
-    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:15px;">📋 Quick Tasks</h2>
-    
-    <div class="task-item">
-      <div class="task-info">
-        <div class="task-title">Watch Adsgram Ad</div>
-        <div class="task-reward">⚡ +100 Coins per ad</div>
-      </div>
-      <button class="action-btn" onclick="watchAdsgramTask()">▶ Watch</button>
-    </div>
-
-    <div class="task-item">
-      <div class="task-info">
-        <div class="task-title">Math Quiz Challenge</div>
-        <div class="task-reward">⚡ +50 Coins</div>
-      </div>
-      <button class="action-btn" onclick="startMathQuiz()">🧮 Solve</button>
-    </div>
-  </div>
-
-  <!-- TAB 3: EARN (SPIN & WHEEL) -->
-  <div id="tab-earn" class="tab-content">
-    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">🎰 Lucky Wheel Spin</h2>
-    
-    <div class="card" style="text-align:center;">
-      <div class="wheel-wrapper">
-        <div class="wheel-pointer"></div>
-        <canvas id="wheelCanvas" width="220" height="220"></canvas>
-      </div>
-
-      <button id="spinBtn" onclick="spinWheel()">🌀 SPIN WHEEL</button>
-
-      <div id="spinContainer" style="display:none; margin-top:15px;">
-        <div id="spinResult" style="font-weight:bold; color:#d9822b; margin-bottom:8px;"></div>
-        <button onclick="claimSpinReward()" style="background:linear-gradient(45deg, #2ecc71, #27ae60);">📺 Watch Ad to Claim</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 4: REFER & EARN -->
-  <div id="tab-refer" class="tab-content">
-    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">👥 Refer & Earn</h2>
-    
-    <div class="card">
-      <div style="font-weight:bold; font-size:16px; margin-bottom:5px;">+500 Coins Per Friend</div>
-      <p style="font-size:12px; color:#8c8378;">Invite your friends to join Tiger Waves and earn bonuses instantly!</p>
-      
-      <div style="background:#fbf6ec; padding:10px; border-radius:10px; font-size:12px; word-break:break-all; margin:10px 0; color:#5c5044;" id="refLinkDisplay">
-        Generating link...
-      </div>
-      
-      <button onclick="copyReferLink()">🔗 Copy Invite Link</button>
-    </div>
-  </div>
-
-  <!-- TAB 5: PROFILE & WALLET -->
-  <div id="tab-profile" class="tab-content">
-    <h2 style="text-align:left; font-size:20px; color:#2d241b; margin-bottom:10px;">👤 Profile & Wallet</h2>
-    
-    <div class="card">
-      <div style="font-weight:bold; margin-bottom:10px;">💸 Withdraw Funds</div>
-      <p style="font-size:12px; color:#8c8378; margin-bottom:10px;">Min. 500 Coins & 5 Referrals required.</p>
-      
-      <select id="withdrawMethod" style="width:100%; padding:10px; border-radius:10px; border:1px solid #f2e5d0; background:#fbf6ec; margin-bottom:10px;">
-        <option value="Binance ID">Binance Pay ID</option>
-        <option value="USDT">USDT Address (TRC20/BEP20)</option>
-      </select>
-      
-      <input type="text" id="withdrawNum" placeholder="Enter Binance ID or Address" style="width:100%; padding:10px; border-radius:10px; border:1px solid #f2e5d0; background:#fbf6ec; margin-bottom:10px; box-sizing:border-box;">
-      
-      <button onclick="requestWithdraw()">Send Withdrawal Request</button>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation Bar -->
-  <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('home', this)">
-      <span class="icon">🏠</span>
-      <span>Home</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('tasks', this)">
-      <span class="icon">📋</span>
-      <span>Tasks</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('earn', this)">
-      <span class="icon">⚡</span>
-      <span>Earn</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('refer', this)">
-      <span class="icon">👥</span>
-      <span>Refer</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('profile', this)">
-      <span class="icon">👤</span>
-      <span>Profile</span>
-    </div>
-  </div>
-
-  <script>
-    const ADSGRAM_BLOCK_ID = "55780";
-    const BOT_TOKEN = "8981530710:AAHg2XW2urkJjamw-zhe3u0VZcjDdmyasf8";
-    const ADMIN_CHAT_ID = "8768217446";
-    const CHANNEL_USERNAME = "@tigerwavas1";
-    const GROUP_USERNAME = "@tigerwavas";
-
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let coins = parseInt(localStorage.getItem("tiger_coins")) || 0;
-    let referCount = parseInt(localStorage.getItem("tiger_refer")) || 0;
-    let pendingReward = 0;
-
-    function updateUI() {
-      localStorage.setItem("tiger_coins", coins);
-      localStorage.setItem("tiger_refer", referCount);
-      document.getElementById("balance").innerText = coins;
-      document.getElementById("usdtVal").innerText = (coins * 0.00001).toFixed(4);
-      
-      const user = tg.initDataUnsafe.user;
-      if(user) {
-        document.getElementById("userName").innerText = user.first_name || "User";
-        document.getElementById("userAvatar").innerText = (user.first_name || "T")[0].toUpperCase();
-        document.getElementById("refLinkDisplay").innerText = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
-      } else {
-        document.getElementById("refLinkDisplay").innerText = `https://t.me/TigerWavesBot/app?start=ref_12345`;
-      }
-    }
-    updateUI();
-
-    function switchTab(tabName, element) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + tabName).classList.add('active');
-      element.classList.add('active');
-    }
-
-    // Telegram Membership Verification
-    async function checkUserJoined(chatUsername, userId) {
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${chatUsername}&user_id=${userId}`);
-        const data = await res.json();
-        return data.ok && ['member', 'administrator', 'creator'].includes(data.result.status);
-      } catch (e) { return false; }
-    }
-
-    async function verifyMembership() {
-      const statusDiv = document.getElementById("verifyStatus");
-      statusDiv.innerText = "Checking membership...";
-      const user = tg.initDataUnsafe.user;
-      if (!user) {
-        document.getElementById("verifyModal").style.display = "none";
-        return;
-      }
-      const joinedChannel = await checkUserJoined(CHANNEL_USERNAME, user.id);
-      const joinedGroup = await checkUserJoined(GROUP_USERNAME, user.id);
-
-      if (joinedChannel && joinedGroup) {
-        document.getElementById("verifyModal").style.display = "none";
-      } else {
-        statusDiv.innerText = "⚠️ Please join both channel & group first!";
-      }
-    }
-
-    // Direct Adsgram Ad Controller Integration
-    function showAdsgramAd(onSuccess) {
-      if (typeof Adsgram === 'undefined') {
-        alert("⚠️ Adsgram SDK Not Loaded. Rewarding directly for test.");
-        if(onSuccess) onSuccess();
-        return;
-      }
-      
-      try {
-        const AdControllerInstance = Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
-        AdControllerInstance.show().then(() => {
-          if(onSuccess) onSuccess();
-        }).catch((err) => {
-          alert("⚠️ Ad failed to load or skipped. Please watch full ad!");
+        // Add sound to all buttons automatically
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                playClickSound();
+            }
         });
-      } catch (e) {
-        if(onSuccess) onSuccess();
-      }
-    }
 
-    // Watch Task Ad
-    function watchAdsgramTask() {
-      showAdsgramAd(() => {
-        coins += 100;
-        updateUI();
-        alert("🎉 Success! +100 Coins added to your balance!");
-      });
-    }
+        let balance = 1000;
+        let spinsLeft = 3;
 
-    // Mini Game Play Simulation with Ad
-    function playMiniGame(gameName, reward) {
-      alert(`🎮 Playing ${gameName}... Complete the game and watch ad to claim reward!`);
-      showAdsgramAd(() => {
-        coins += reward;
-        updateUI();
-        alert(`🎉 Great job! You received +${reward} Coins for playing ${gameName}!`);
-      });
-    }
+        // Telegram User Init
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                document.getElementById('username').innerText = user.first_name || "Tiger User";
+                document.getElementById('user-initial').innerText = (user.first_name || "T").charAt(0).toUpperCase();
+            }
+        }
 
-    // Math Quiz
-    function startMathQuiz() {
-      const n1 = Math.floor(Math.random() * 20) + 1;
-      const n2 = Math.floor(Math.random() * 20) + 1;
-      const ans = prompt(`Solve this: ${n1} + ${n2} = ?`);
-      if (parseInt(ans) === (n1 + n2)) {
-        showAdsgramAd(() => {
-          coins += 50;
-          updateUI();
-          alert("🎉 Correct answer! +50 Coins claimed.");
-        });
-      } else if (ans !== null) {
-        alert("❌ Wrong answer, try again!");
-      }
-    }
+        function updateBalance(amount) {
+            balance += amount;
+            document.getElementById('balance').innerText = balance;
+        }
 
-    // Wheel Canvas Drawing
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const rewards = [10, 50, 100, 200, 300, 500];
-    const colors = ['#f3ad3c', '#e08b1b', '#d9822b', '#c26a1b', '#ab5510', '#944105'];
-    const numSegments = rewards.length;
-    const arcSize = (2 * Math.PI) / numSegments;
-    let currentRotation = 0;
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            el.classList.add('active');
+        }
 
-    function drawWheel() {
-      for (let i = 0; i < numSegments; i++) {
-        const angle = i * arcSize;
-        ctx.beginPath();
-        ctx.fillStyle = colors[i];
-        ctx.moveTo(110, 110);
-        ctx.arc(110, 110, 110, angle, angle + arcSize);
-        ctx.lineTo(110, 110);
-        ctx.fill();
+        // Real Canvas Wheel Setup
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const rewards = [100, 50, 500, 200, 1000, 0, 300, 250];
+        const colors = ['#f3ba2f', '#151b24', '#d48806', '#1f293d', '#f3ba2f', '#111721', '#d48806', '#151b24'];
+        const sliceAngle = (2 * Math.PI) / rewards.length;
 
-        ctx.save();
-        ctx.translate(110, 110);
-        ctx.rotate(angle + arcSize / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 14px sans-serif";
-        ctx.fillText(rewards[i] + " C", 95, 5);
-        ctx.restore();
-      }
-    }
-    drawWheel();
+        function drawWheel(currentAngle = 0) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            rewards.forEach((reward, i) => {
+                const angle = i * sliceAngle + currentAngle;
+                ctx.beginPath();
+                ctx.fillStyle = colors[i];
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, angle, angle + sliceAngle, false);
+                ctx.lineTo(150, 150);
+                ctx.fill();
+                ctx.save();
 
-    function spinWheel() {
-      const btn = document.getElementById("spinBtn");
-      btn.disabled = true;
-      document.getElementById("spinContainer").style.display = "none";
+                ctx.translate(150, 150);
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 14px Montserrat';
+                ctx.fillText(reward + ' TWG', 130, 6);
+                ctx.restore();
+            });
+        }
+        drawWheel();
 
-      const randomIndex = Math.floor(Math.random() * numSegments);
-      pendingReward = rewards[randomIndex];
+        let currentRotation = 0;
+        let isSpinning = false;
 
-      const segmentDegree = 360 / numSegments;
-      const targetDegree = 360 - (randomIndex * segmentDegree) - (segmentDegree / 2);
-      const totalRotation = currentRotation + (360 * 4) + targetDegree - (currentRotation % 360);
-      currentRotation = totalRotation;
+        function triggerSpin() {
+            if (isSpinning) return;
+            if (spinsLeft <= 0) {
+                alert("No spins left today! Check back in 24 hours.");
+                return;
+            }
 
-      canvas.style.transform = `rotate(${totalRotation}deg)`;
+            // Trigger Monetag Ad SDK
+            if (typeof show_12118520 === 'function') {
+                show_12118520().then(() => {
+                    executeSpinLogic();
+                }).catch(() => {
+                    executeSpinLogic();
+                });
+            } else {
+                alert("Loading Monetag Advertisement...");
+                setTimeout(executeSpinLogic, 1500);
+            }
+        }
 
-      setTimeout(() => {
-        document.getElementById("spinResult").innerText = `🎉 You won ${pendingReward} Coins!`;
-        document.getElementById("spinContainer").style.display = "block";
-        btn.disabled = false;
-      }, 4000);
-    }
+        function executeSpinLogic() {
+            isSpinning = true;
+            spinsLeft--;
+            document.getElementById('spins-left').innerText = spinsLeft;
 
-    function claimSpinReward() {
-      showAdsgramAd(() => {
-        coins += pendingReward;
-        updateUI();
-        alert(`🎉 Claimed ${pendingReward} Coins successfully!`);
-        document.getElementById("spinContainer").style.display = "none";
-        pendingReward = 0;
-      });
-    }
+            const randomRewardIndex = Math.floor(Math.random() * rewards.length);
+            const winningReward = rewards[randomRewardIndex];
+            
+            const extraSpins = 5 * 360;
+            const anglePerSlice = 360 / rewards.length;
+            const targetAngle = extraSpins + (360 - (randomRewardIndex * anglePerSlice + anglePerSlice / 2));
+            
+            currentRotation += targetAngle;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-    function copyReferLink() {
-      const user = tg.initDataUnsafe.user || { id: "12345" };
-      const refLink = `https://t.me/TigerWavesBot/app?start=ref_${user.id}`;
-      navigator.clipboard.writeText(refLink).then(() => {
-        alert("✅ Referral link copied to clipboard!");
-      });
-    }
+            setTimeout(() => {
+                isSpinning = false;
+                updateBalance(winningReward);
+                alert(`Congratulations! You won ${winningReward} TWG Coins!`);
+            }, 4000);
+        }
 
-    function requestWithdraw() {
-      const method = document.getElementById("withdrawMethod").value;
-      const address = document.getElementById("withdrawNum").value;
-      
-      if (referCount < 5) {
-        alert(`⚠️ Requires at least 5 referrals! Current: ${referCount}/5`);
-        return;
-      }
-      if (coins < 500) {
-        alert("⚠️ Minimum 500 Coins required to withdraw!");
-        return;
-      }
-      if (!address) {
-        alert("⚠️ Please enter your Binance ID or USDT Address!");
-        return;
-      }
+        function playGame(gameName, level, rewardCoins) {
+            // Trigger Monetag Ad SDK before game reward
+            if (typeof show_12118520 === 'function') {
+                show_12118520().then(() => {
+                    completeGameReward(gameName, level, rewardCoins);
+                }).catch(() => {
+                    completeGameReward(gameName, level, rewardCoins);
+                });
+            } else {
+                alert(`Loading Monetag Ad for ${gameName} (${level} Mode)...`);
+                setTimeout(() => {
+                    completeGameReward(gameName, level, rewardCoins);
+                }, 2000);
+            }
+        }
 
-      const user = tg.initDataUnsafe.user || { first_name: "User" };
-      const msg = `📥 *New Withdrawal Request!*\n\n👤 Name: ${user.first_name}\n💳 Method: ${method}\n📍 Address/ID: \`${address}\`\n💰 Balance: ${coins} Coins`;
+        function completeGameReward(gameName, level, rewardCoins) {
+            alert(`Game Complete! You played ${gameName} [${level}] and won ${rewardCoins} TWG Coins!`);
+            updateBalance(rewardCoins);
+        }
 
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: msg, parse_mode: "Markdown" })
-      }).then(() => {
-        alert("✅ Withdrawal request sent successfully!");
-        coins = 0;
-        updateUI();
-        document.getElementById("withdrawNum").value = "";
-      }).catch(() => {
-        alert("Failed to send request.");
-      });
-    }
+        function claimTask(reward, btn) {
+            if (typeof show_12118520 === 'function') {
+                show_12118520().then(() => {
+                    completeTaskReward(reward, btn);
+                }).catch(() => {
+                    completeTaskReward(reward, btn);
+                });
+            } else {
+                alert("Loading Monetag ad to verify task...");
+                setTimeout(() => {
+                    completeTaskReward(reward, btn);
+                }, 1500);
+            }
+        }
 
-    window.onload = function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      if(urlParams.has('ref') && !localStorage.getItem("ref_counted")) {
-        referCount += 1;
-        coins += 500;
-        localStorage.setItem("ref_counted", "true");
-        updateUI();
-      }
-    };
-  </script>
+        function completeTaskReward(reward, btn) {
+            btn.innerText = "Claimed";
+            btn.style.color = "#2ecc71";
+            btn.style.borderColor = "#2ecc71";
+            btn.disabled = true;
+            updateBalance(reward);
+            alert(`Successfully claimed +${reward} TWG!`);
+        }
+
+        function copyRefLink() {
+            navigator.clipboard.writeText("https://t.me/TigerWavesBot");
+            alert("Referral link copied to clipboard!");
+        }
+
+        function requestWithdraw() {
+            const amount = document.getElementById('pay-amount').value;
+            const number = document.getElementById('pay-number').value;
+
+            if (!number) {
+                alert("Please enter your mobile number or wallet address!");
+                return;
+            }
+            if (amount < 10000) {
+                alert("Minimum withdrawal limit is 10,000 TWG Coins (৳100 BDT)!");
+                return;
+            }
+            if (amount > balance) {
+                alert("Insufficient balance in your account!");
+                return;
+            }
+
+            updateBalance(-amount);
+            alert(`Withdrawal Request of ${amount} TWG submitted successfully! Payment will be processed within 24 hours.`);
+        }
+    </script>
 </body>
 </html>
